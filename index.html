@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Корзина — IGRObeauty</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!--
+  Разметка печатается целиком: все три группы товаров и все варианты плашки
+  статуса присутствуют сразу, JS лишь переключает видимость и меняет тексты.
+  При переезде на PHP повторяющиеся куски станут foreach, ветки плашки — if.
+  Значения в тексте — для стартового состояния (статус РРЦ); JS пересчитает их
+  при загрузке, а в бою их напечатает сервер.
+-->
+<div class="cart-page">
+<div class="cart-container">
+
+  <!-- Служебная панель прототипа: индикатор брейкпоинта, переключатель статуса
+       мастера и тумблеры вкладок. В боевой корзине этого блока нет. -->
+  <div class="u-style-1" data-dev-bar>
+    <div class="bp-badge" data-bp-label>Desktop · 1280+</div>
+    <div class="u-style-2">
+      <span class="u-style-3">Статус мастера</span>
+      <select class="dev-select" data-status-select></select>
+    </div>
+    <label class="dev-toggle">
+      <input type="checkbox" class="dev-toggle-input" data-toggle-tab="markdown" checked>
+      <span class="u-style-3">Уценённые товары</span>
+    </label>
+    <label class="dev-toggle">
+      <input type="checkbox" class="dev-toggle-input" data-toggle-tab="promo" checked>
+      <span class="u-style-3">Спец. акции</span>
+    </label>
+  </div>
+
+  <!-- Хлебные крошки -->
+  <nav class="u-style-4">
+    <span class="u-style-5">Главная</span>
+    <span class="u-style-6">/</span>
+    <span class="u-style-7">Корзина</span>
+  </nav>
+
+  <!-- Заголовок страницы -->
+  <div class="u-style-8">
+    <h1 class="cart-h1">Корзина</h1>
+    <span class="u-style-9">Позиций: <strong class="u-style-10" data-total-positions>11</strong></span>
+  </div>
+
+  <!-- Плашка статуса мастера. Три взаимоисключающих варианта: мобильная плашка
+       «Мастер», мобильная «РРЦ» и общая (тёмная либо белая для РРЦ). -->
+  <div class="status-band is-rrc" data-status-band>
+
+    <!-- Вариант 1: мобильный «Мастер» — пилюля цен и подарок в одну строку -->
+    <span class="mm-pill" data-mm-pill hidden>
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="currentColor"><path d="M9.18751 8.24996C9.60172 8.24996 9.9375 8.58575 9.93751 8.99996V12H10.5C10.9142 12 11.25 12.3357 11.25 12.75C11.25 13.1642 10.9142 13.5 10.5 13.5H7.87501C7.46079 13.5 7.12501 13.1642 7.12501 12.75C7.12501 12.3358 7.4608 12 7.87501 12H8.43751V9.74996C8.02329 9.74996 7.68751 9.41417 7.68751 8.99996C7.68751 8.58575 8.0233 8.24996 8.43751 8.24996H9.18751Z"></path><path d="M9.00001 4.49996C9.39783 4.49996 9.77925 4.65811 10.0606 4.93941C10.3419 5.22072 10.5 5.60214 10.5 5.99996C10.5 6.39778 10.3419 6.7792 10.0606 7.06051C9.77925 7.34181 9.39783 7.49996 9.00001 7.49996C8.60218 7.49996 8.22076 7.34181 7.93946 7.06051C7.65816 6.7792 7.50001 6.39778 7.50001 5.99996C7.50001 5.60214 7.65816 5.22072 7.93946 4.93941C8.22076 4.65811 8.60218 4.49996 9.00001 4.49996Z"></path><path fill-rule="evenodd" clip-rule="evenodd" d="M8.99927 0.74996C10.0831 0.748648 11.1569 0.961406 12.1582 1.37618C13.1589 1.79073 14.0679 2.39883 14.833 3.16549L15.1135 3.45919C15.7498 4.15977 16.2608 4.9663 16.6238 5.84249C17.0383 6.84327 17.2511 7.91602 17.25 8.99923L17.2405 9.40499C17.195 10.3502 16.9867 11.282 16.6238 12.1582C16.2092 13.1588 15.6004 14.0671 14.8337 14.8322C14.0684 15.5996 13.1595 16.2089 12.1582 16.6237C11.1569 17.0385 10.0831 17.2513 8.99927 17.25C7.91607 17.2511 6.84331 17.0382 5.84254 16.6237C4.84115 16.2089 3.931 15.6004 3.16553 14.833C2.39905 14.0679 1.79071 13.1587 1.37623 12.1582C0.961451 11.1568 0.748694 10.0831 0.750006 8.99923C0.74889 7.91602 0.961732 6.84326 1.37623 5.84249C1.79103 4.8411 2.39961 3.93095 3.167 3.16549C3.93217 2.39875 4.84176 1.79073 5.84254 1.37618C6.84331 0.961686 7.91607 0.748844 8.99927 0.74996ZM8.99927 2.24996C8.11299 2.24887 7.23484 2.42275 6.41602 2.76192C5.59728 3.10109 4.85341 3.59861 4.22755 4.22603L4.22608 4.2275C3.59865 4.85337 3.10113 5.59723 2.76197 6.41598C2.42279 7.23479 2.24891 8.11294 2.25001 8.99923V9.00069C2.24891 9.88698 2.42279 10.7651 2.76197 11.5839C3.05878 12.3005 3.47725 12.9593 3.99756 13.5322L4.22608 13.7724L4.22755 13.7739C4.85341 14.4013 5.59728 14.8988 6.41602 15.238C7.23484 15.5772 8.11299 15.7511 8.99927 15.75H9.00074C9.88702 15.7511 10.7652 15.5772 11.584 15.238C12.4027 14.8988 13.1466 14.4013 13.7725 13.7739L13.7739 13.7724C14.4014 13.1465 14.8989 12.4027 15.238 11.5839C15.5772 10.7651 15.7511 9.88698 15.75 9.00069V8.99923C15.7511 8.11294 15.5772 7.23479 15.238 6.41598C14.8989 5.59723 14.4014 4.85337 13.7739 4.2275L13.7725 4.22603C13.1466 3.59861 12.4027 3.10108 11.584 2.76192C10.7652 2.42275 9.88702 2.24887 9.00074 2.24996H8.99927Z"></path></svg>
+      Проф. Цены
+      <span class="tip tip--badge" role="tooltip" data-mm-tip hidden>
+        <span class="tip-text" data-mm-tip-text></span>
+        <span class="tip-arrow"></span>
+      </span>
+    </span>
+    <span class="mm-gift" title="Программа лояльности" data-mm-gift hidden>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M23.2496 9.00003C23.2496 8.50274 23.052 8.02583 22.7004 7.6742C22.3488 7.32257 21.8718 7.12503 21.3746 7.12503H19.7846C20.0162 6.65921 20.1344 6.14523 20.1296 5.62503C20.1355 5.18395 20.0538 4.74609 19.8891 4.33687C19.7244 3.92764 19.4801 3.55522 19.1703 3.24122C18.8605 2.92721 18.4914 2.6779 18.0844 2.50774C17.6774 2.33759 17.2407 2.24998 16.7996 2.25003C15.8675 2.21753 14.9418 2.41545 14.1046 2.82624C13.2673 3.23702 12.5443 3.848 11.9996 4.60503C11.4549 3.848 10.7318 3.23702 9.89457 2.82624C9.0573 2.41545 8.13162 2.21753 7.19956 2.25003C6.31639 2.25003 5.46939 2.60086 4.8449 3.22536C4.2204 3.84986 3.86956 4.69685 3.86956 5.58003C3.86472 6.10023 3.98294 6.61421 4.21456 7.08002H2.62456C2.3745 7.07995 2.12695 7.1299 1.89648 7.22693C1.66601 7.32396 1.45728 7.46611 1.28257 7.64501C1.10786 7.82392 0.9707 8.03596 0.879163 8.26867C0.787626 8.50137 0.743562 8.75004 0.749564 9.00003V12.75H2.62456V19.935C2.64015 20.4218 2.84455 20.8835 3.19451 21.2222C3.54446 21.561 4.01251 21.7503 4.49956 21.75H19.4996C19.9968 21.75 20.4738 21.5525 20.8254 21.2009C21.177 20.8492 21.3746 20.3723 21.3746 19.875V12.69H23.2496V9.00003ZM16.7996 4.12503C17.1974 4.12503 17.5789 4.28306 17.8602 4.56437C18.1415 4.84567 18.2996 5.2272 18.2996 5.62503C18.2996 6.02285 18.1415 6.40438 17.8602 6.68569C17.5789 6.96699 17.1974 7.12503 16.7996 7.12503H13.0196C13.1534 6.2396 13.6177 5.43779 14.3192 4.88111C15.0206 4.32443 15.9069 4.05426 16.7996 4.12503ZM7.19956 4.12503C8.09224 4.05426 8.97856 4.32443 9.67997 4.88111C10.3814 5.43779 10.8458 6.2396 10.9796 7.12503H7.19956C6.86816 7.0495 6.57224 6.86366 6.36028 6.59795C6.14831 6.33224 6.03287 6.00242 6.03287 5.66253C6.03287 5.32263 6.14831 4.99281 6.36028 4.7271C6.57224 4.46139 6.86816 4.27555 7.19956 4.20003V4.12503ZM2.62456 9.00003H9.17956V10.815H2.62456V9.00003ZM9.17956 19.935H4.49956V12.69H9.17956V19.935ZM11.0696 19.935V9.00003H12.9296V19.935H11.0696ZM19.4996 19.935H14.8196V12.69H19.4996V19.935ZM21.3746 10.935H14.8196V9.00003H21.3746V10.935Z" fill="currentColor"></path></svg>
+      <span class="mm-gift-label">Программа лояльности</span>
+    </span>
+
+    <!-- Вариант 2: мобильный «РРЦ» -->
+    <span class="rrc-m-pill" data-rrc-m-pill hidden>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 23c6.075 0 11-4.925 11-11S18.075 1 12 1 1 5.925 1 12s4.925 11 11 11Zm0-16.6a1.6 1.6 0 1 0 0 3.2 1.6 1.6 0 0 0 0-3.2Zm-1.45 5.45a1.45 1.45 0 0 1 2.9 0v4.2a1.45 1.45 0 0 1-2.9 0v-4.2Z"></path></svg>
+      РРЦ
+    </span>
+    <span class="rrc-m-desc" data-rrc-m-desc hidden>Авторизуйтесь для проф. цен</span>
+    <a class="rrc-m-gift" href="https://www.igrobeauty.ru/about/club/" target="_blank" rel="noopener" data-rrc-m-gift hidden>
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="rrc-m-gift-icon"><rect x="3" y="8" width="18" height="4" rx="1"></rect><path d="M4 12v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8"></path><path d="M12 8v13"></path><path d="M12 8S10.5 3.5 7.5 4.2C5.8 4.6 5.6 7 7 8h5Z"></path><path d="M12 8s1.5-4.5 4.5-3.8C18.2 4.6 18.4 7 17 8h-5Z"></path></svg>
+      <span class="rrc-m-gift-text">Программа лояльности</span>
+    </a>
+
+    <!-- Вариант 3: белая плашка «РРЦ» для планшета и десктопа -->
+    <span class="rrc-header" data-rrc-header>Мой статус</span>
+    <div class="rrc-divider" data-rrc-divider></div>
+    <span class="rrc-pill" data-rrc-pill>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" class="rrc-pill-icon"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 23c6.075 0 11-4.925 11-11S18.075 1 12 1 1 5.925 1 12s4.925 11 11 11Zm0-16.6a1.6 1.6 0 1 0 0 3.2 1.6 1.6 0 0 0 0-3.2Zm-1.45 5.45a1.45 1.45 0 0 1 2.9 0v4.2a1.45 1.45 0 0 1-2.9 0v-4.2Z"></path></svg>
+      <span data-rrc-pill-text>Рекомендованная розничная цена</span>
+    </span>
+    <span class="rrc-desc" data-rrc-desc>Авторизуйтесь как мастер, чтобы получить профессиональные цены</span>
+    <a class="rrc-loyalty" href="https://www.igrobeauty.ru/about/club/" target="_blank" rel="noopener" data-rrc-loyalty>Узнать о программе лояльности</a>
+
+    <!-- Вариант 3б: тёмная плашка статуса -->
+    <span class="u-style-11" data-status-header hidden>Мой статус</span>
+    <div class="status-divider" data-status-divider hidden></div>
+    <div class="status-group" data-status-group hidden>
+      <span class="status-name" data-status-name></span>
+      <!-- Бейджей у статуса бывает 0, 1 или 2 — размечены оба, лишний скрыт -->
+      <span class="status-badge" data-badge="0" hidden>
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="currentColor" class="status-badge-icon" data-badge-icon hidden><path d="M9.18751 8.24996C9.60172 8.24996 9.9375 8.58575 9.93751 8.99996V12H10.5C10.9142 12 11.25 12.3357 11.25 12.75C11.25 13.1642 10.9142 13.5 10.5 13.5H7.87501C7.46079 13.5 7.12501 13.1642 7.12501 12.75C7.12501 12.3358 7.4608 12 7.87501 12H8.43751V9.74996C8.02329 9.74996 7.68751 9.41417 7.68751 8.99996C7.68751 8.58575 8.0233 8.24996 8.43751 8.24996H9.18751Z"></path><path d="M9.00001 4.49996C9.39783 4.49996 9.77925 4.65811 10.0606 4.93941C10.3419 5.22072 10.5 5.60214 10.5 5.99996C10.5 6.39778 10.3419 6.7792 10.0606 7.06051C9.77925 7.34181 9.39783 7.49996 9.00001 7.49996C8.60218 7.49996 8.22076 7.34181 7.93946 7.06051C7.65816 6.7792 7.50001 6.39778 7.50001 5.99996C7.50001 5.60214 7.65816 5.22072 7.93946 4.93941C8.22076 4.65811 8.60218 4.49996 9.00001 4.49996Z"></path><path fill-rule="evenodd" clip-rule="evenodd" d="M8.99927 0.74996C10.0831 0.748648 11.1569 0.961406 12.1582 1.37618C13.1589 1.79073 14.0679 2.39883 14.833 3.16549L15.1135 3.45919C15.7498 4.15977 16.2608 4.9663 16.6238 5.84249C17.0383 6.84327 17.2511 7.91602 17.25 8.99923L17.2405 9.40499C17.195 10.3502 16.9867 11.282 16.6238 12.1582C16.2092 13.1588 15.6004 14.0671 14.8337 14.8322C14.0684 15.5996 13.1595 16.2089 12.1582 16.6237C11.1569 17.0385 10.0831 17.2513 8.99927 17.25C7.91607 17.2511 6.84331 17.0382 5.84254 16.6237C4.84115 16.2089 3.931 15.6004 3.16553 14.833C2.39905 14.0679 1.79071 13.1587 1.37623 12.1582C0.961451 11.1568 0.748694 10.0831 0.750006 8.99923C0.74889 7.91602 0.961732 6.84326 1.37623 5.84249C1.79103 4.8411 2.39961 3.93095 3.167 3.16549C3.93217 2.39875 4.84176 1.79073 5.84254 1.37618C6.84331 0.961686 7.91607 0.748844 8.99927 0.74996ZM8.99927 2.24996C8.11299 2.24887 7.23484 2.42275 6.41602 2.76192C5.59728 3.10109 4.85341 3.59861 4.22755 4.22603L4.22608 4.2275C3.59865 4.85337 3.10113 5.59723 2.76197 6.41598C2.42279 7.23479 2.24891 8.11294 2.25001 8.99923V9.00069C2.24891 9.88698 2.42279 10.7651 2.76197 11.5839C3.05878 12.3005 3.47725 12.9593 3.99756 13.5322L4.22608 13.7724L4.22755 13.7739C4.85341 14.4013 5.59728 14.8988 6.41602 15.238C7.23484 15.5772 8.11299 15.7511 8.99927 15.75H9.00074C9.88702 15.7511 10.7652 15.5772 11.584 15.238C12.4027 14.8988 13.1466 14.4013 13.7725 13.7739L13.7739 13.7724C14.4014 13.1465 14.8989 12.4027 15.238 11.5839C15.5772 10.7651 15.7511 9.88698 15.75 9.00069V8.99923C15.7511 8.11294 15.5772 7.23479 15.238 6.41598C14.8989 5.59723 14.4014 4.85337 13.7739 4.2275L13.7725 4.22603C13.1466 3.59861 12.4027 3.10108 11.584 2.76192C10.7652 2.42275 9.88702 2.24887 9.00074 2.24996H8.99927Z"></path></svg>
+        <span data-badge-text></span>
+        <span class="tip tip--badge" role="tooltip" data-badge-tip hidden>
+          <span class="tip-text" data-badge-tip-text></span>
+          <span class="tip-arrow"></span>
+        </span>
+      </span>
+      <span class="status-badge" data-badge="1" hidden>
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="currentColor" class="status-badge-icon" data-badge-icon hidden><path d="M9.18751 8.24996C9.60172 8.24996 9.9375 8.58575 9.93751 8.99996V12H10.5C10.9142 12 11.25 12.3357 11.25 12.75C11.25 13.1642 10.9142 13.5 10.5 13.5H7.87501C7.46079 13.5 7.12501 13.1642 7.12501 12.75C7.12501 12.3358 7.4608 12 7.87501 12H8.43751V9.74996C8.02329 9.74996 7.68751 9.41417 7.68751 8.99996C7.68751 8.58575 8.0233 8.24996 8.43751 8.24996H9.18751Z"></path><path d="M9.00001 4.49996C9.39783 4.49996 9.77925 4.65811 10.0606 4.93941C10.3419 5.22072 10.5 5.60214 10.5 5.99996C10.5 6.39778 10.3419 6.7792 10.0606 7.06051C9.77925 7.34181 9.39783 7.49996 9.00001 7.49996C8.60218 7.49996 8.22076 7.34181 7.93946 7.06051C7.65816 6.7792 7.50001 6.39778 7.50001 5.99996C7.50001 5.60214 7.65816 5.22072 7.93946 4.93941C8.22076 4.65811 8.60218 4.49996 9.00001 4.49996Z"></path><path fill-rule="evenodd" clip-rule="evenodd" d="M8.99927 0.74996C10.0831 0.748648 11.1569 0.961406 12.1582 1.37618C13.1589 1.79073 14.0679 2.39883 14.833 3.16549L15.1135 3.45919C15.7498 4.15977 16.2608 4.9663 16.6238 5.84249C17.0383 6.84327 17.2511 7.91602 17.25 8.99923L17.2405 9.40499C17.195 10.3502 16.9867 11.282 16.6238 12.1582C16.2092 13.1588 15.6004 14.0671 14.8337 14.8322C14.0684 15.5996 13.1595 16.2089 12.1582 16.6237C11.1569 17.0385 10.0831 17.2513 8.99927 17.25C7.91607 17.2511 6.84331 17.0382 5.84254 16.6237C4.84115 16.2089 3.931 15.6004 3.16553 14.833C2.39905 14.0679 1.79071 13.1587 1.37623 12.1582C0.961451 11.1568 0.748694 10.0831 0.750006 8.99923C0.74889 7.91602 0.961732 6.84326 1.37623 5.84249C1.79103 4.8411 2.39961 3.93095 3.167 3.16549C3.93217 2.39875 4.84176 1.79073 5.84254 1.37618C6.84331 0.961686 7.91607 0.748844 8.99927 0.74996ZM8.99927 2.24996C8.11299 2.24887 7.23484 2.42275 6.41602 2.76192C5.59728 3.10109 4.85341 3.59861 4.22755 4.22603L4.22608 4.2275C3.59865 4.85337 3.10113 5.59723 2.76197 6.41598C2.42279 7.23479 2.24891 8.11294 2.25001 8.99923V9.00069C2.24891 9.88698 2.42279 10.7651 2.76197 11.5839C3.05878 12.3005 3.47725 12.9593 3.99756 13.5322L4.22608 13.7724L4.22755 13.7739C4.85341 14.4013 5.59728 14.8988 6.41602 15.238C7.23484 15.5772 8.11299 15.7511 8.99927 15.75H9.00074C9.88702 15.7511 10.7652 15.5772 11.584 15.238C12.4027 14.8988 13.1466 14.4013 13.7725 13.7739L13.7739 13.7724C14.4014 13.1465 14.8989 12.4027 15.238 11.5839C15.5772 10.7651 15.7511 9.88698 15.75 9.00069V8.99923C15.7511 8.11294 15.5772 7.23479 15.238 6.41598C14.8989 5.59723 14.4014 4.85337 13.7739 4.2275L13.7725 4.22603C13.1466 3.59861 12.4027 3.10108 11.584 2.76192C10.7652 2.42275 9.88702 2.24887 9.00074 2.24996H8.99927Z"></path></svg>
+        <span data-badge-text></span>
+        <span class="tip tip--badge tip--sm" role="tooltip" data-badge-tip hidden>
+          <span class="tip-text" data-badge-tip-text></span>
+          <span class="tip-arrow"></span>
+        </span>
+      </span>
+    </div>
+    <a class="loyalty-text" href="https://www.igrobeauty.ru/about/club/" target="_blank" rel="noopener" data-loyalty-text hidden>Узнать о программе лояльности</a>
+
+    <!-- Картинка-подарок общая для белой и тёмной плашки -->
+    <img class="loyalty-img" src="assets/gift-box.png" alt="Программа лояльности" data-loyalty-img>
+  </div>
+
+  <!-- Сообщение о разных категориях в корзине -->
+  <div class="u-style-14" data-info-alert>
+    <div class="ds-alert-info" role="alert">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="ds-alert-icon"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"></circle><path d="M12 11v5M12 8h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg>
+      <div class="ds-alert-body">В вашей корзине есть товары из разных категорий — они рассчитываются отдельно по своим правилам цены.</div>
+      <button type="button" class="co-alert-close" aria-label="Скрыть" data-hide-info>
+        <svg width="18" height="18" viewBox="0 0 16 16" fill="none"><path d="M4 4L12 12M12 4L4 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Двухколоночная сетка -->
+  <div class="cart-grid">
+
+  <!-- Левая колонка: вкладки и список товаров -->
+  <div class="u-style-15">
+    <div class="tabs-section">
+
+      <!-- Вкладки групп -->
+      <div class="tabs-row" data-tabs-row>
+        <div class="tab is-active is-first" data-tab="regular">
+          <span class="tab-name">Обычные товары</span>
+          <span class="tab-count">4 шт.</span>
+          <span class="tab-sum">7 330 ₽</span>
+          <label class="tab-check" data-tab-check>
+            <input type="checkbox" class="u-style-18" data-check-all="regular" checked>
+            <span class="cb-box is-on">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" class="cb-check"><path d="M5 13l4 4L19 7" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+            </span>
+          </label>
+        </div>
+        <div class="tab" data-tab="markdown">
+          <span class="tab-name">Уценённые товары</span>
+          <span class="tab-count">4 шт.</span>
+          <span class="tab-sum">2 590 ₽</span>
+          <label class="tab-check" data-tab-check>
+            <input type="checkbox" class="u-style-18" data-check-all="markdown" checked>
+            <span class="cb-box is-on">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" class="cb-check"><path d="M5 13l4 4L19 7" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+            </span>
+          </label>
+        </div>
+        <div class="tab is-last" data-tab="promo">
+          <span class="tab-name">Специальные акции</span>
+          <span class="tab-count">3 шт.</span>
+          <span class="tab-sum">3 097 ₽</span>
+          <label class="tab-check" data-tab-check>
+            <input type="checkbox" class="u-style-18" data-check-all="promo" checked>
+            <span class="cb-box is-on">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" class="cb-check"><path d="M5 13l4 4L19 7" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+            </span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Подложка списка товаров -->
+      <div class="tabs-card" data-tabs-card>
+
+        <!-- Шкала скидки за объём — только для вкладки обычных товаров -->
+        <div class="u-style-21" data-volume-bar>
+          <div class="vol-outer">
+            <div class="vol-status">
+              <div class="u-style-22">
+                <span class="u-style-23">Скидка за объём</span>
+                <span class="vol-tip-wrap" data-vol-tip-wrap>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" class="u-style-24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 23c6.075 0 11-4.925 11-11S18.075 1 12 1 1 5.925 1 12s4.925 11 11 11Zm0-16.6a1.6 1.6 0 1 0 0 3.2 1.6 1.6 0 0 0 0-3.2Zm-1.45 5.45a1.45 1.45 0 0 1 2.9 0v4.2a1.45 1.45 0 0 1-2.9 0v-4.2Z"></path></svg>
+                  <span class="tip tip--vol" role="tooltip" data-vol-tip hidden>
+                    <span class="tip-bridge"></span>
+                    <span class="tip-text">Автоматически применяется к сумме заказа в соответствии с порогами на шкале при отсутствии более выгодных скидок.</span>
+                    <a class="tip-link" href="https://www.igrobeauty.ru/about/club/" target="_blank" rel="noopener">Узнать больше</a>
+                    <span class="tip-arrow"></span>
+                  </span>
+                </span>
+              </div>
+              <span class="u-style-25" data-volume-status>10% — применена</span>
+            </div>
+            <!-- Пять порогов: 5000, 7000, 10000, 20000, 100000 -->
+            <div class="vol-tiers" data-vol-tiers>
+              <div class="vol-seg" data-seg="5000">
+                <span class="vol-amount is-achieved">5 000 ₽</span>
+                <div class="vol-bar-wrap"><div class="vol-track"><div class="vol-fill is-achieved" style="width:100%"></div></div></div>
+                <span class="vol-pct is-achieved">5%</span>
+              </div>
+              <div class="vol-seg" data-seg="7000">
+                <span class="vol-amount is-achieved">7 000 ₽</span>
+                <div class="vol-bar-wrap"><div class="vol-track"><div class="vol-fill is-achieved" style="width:100%"></div></div></div>
+                <span class="vol-pct is-achieved">7%</span>
+              </div>
+              <div class="vol-seg" data-seg="10000">
+                <span class="vol-amount is-achieved">10 000 ₽</span>
+                <div class="vol-bar-wrap"><div class="vol-track"><div class="vol-fill is-achieved" style="width:100%"></div></div></div>
+                <span class="vol-pct is-achieved is-applied">10%</span>
+              </div>
+              <div class="vol-seg is-big" data-seg="20000">
+                <span class="vol-amount">20 000 ₽</span>
+                <div class="vol-bar-wrap"><div class="vol-track is-big"><div class="vol-fill" style="width:62.9%"></div></div></div>
+                <span class="vol-pct">15%</span>
+              </div>
+              <div class="vol-seg" data-seg="100000">
+                <span class="vol-amount">100 000 ₽</span>
+                <div class="vol-bar-wrap"><div class="vol-track"><div class="vol-fill" style="width:0%"></div></div></div>
+                <span class="vol-pct">25%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Группа: обычные товары -->
+        <div class="tab-panel" data-panel="regular">
+
+          <div class="row" data-row="r1">
+            <label class="row-check">
+              <input type="checkbox" class="u-style-18" data-check checked>
+              <span class="cb-box is-on"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" class="cb-check"><path d="M5 13l4 4L19 7" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
+            </label>
+            <div class="row-img" style="background-image:url(assets/products/nirvel.png)"></div>
+            <div class="row-name-block">
+              <span class="row-name">P-06 Nirvel Pastel ArtX 100 мл Краситель для волос, оттенок - Серебристый</span>
+              <span class="row-meta">арт. IGRO-5750 • бренд Nirvel</span>
+            </div>
+            <div class="row-right">
+              <div class="row-price-block">
+                <span class="row-price" data-price>10 800 ₽</span>
+                <span class="u-style-27" data-old-price hidden></span>
+              </div>
+              <span class="row-price-type" data-price-type>РРЦ со скидкой
+10% за объём</span>
+              <span class="row-price-badge" data-price-badge hidden>Цена по Акции</span>
+              <div class="row-qty">
+                <span class="row-unit-spacer">&nbsp;</span>
+                <div class="u-style-28" data-qty-stepper>
+                  <button type="button" class="qty-btn is-dec" aria-label="Уменьшить" data-qty-dec>−</button>
+                  <input type="text" inputmode="numeric" class="qty-input" value="4" data-qty-input>
+                  <button type="button" class="qty-btn is-inc" aria-label="Увеличить" data-qty-inc>+</button>
+                </div>
+                <span class="row-per-unit" data-per-unit>2 700 ₽/ед</span>
+              </div>
+            </div>
+            <span class="u-style-29">
+              <div class="u-style-30" role="button" aria-label="Удалить" data-remove>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="u-style-31"><path d="M4 4L12 12M12 4L4 12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path></svg>
+              </div>
+            </span>
+          </div>
+
+          <div class="row has-border" data-row="r2">
+            <label class="row-check">
+              <input type="checkbox" class="u-style-18" data-check checked>
+              <span class="cb-box is-on"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" class="cb-check"><path d="M5 13l4 4L19 7" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
+            </label>
+            <div class="row-img" style="background-image:url(assets/products/lashcolor.png)"></div>
+            <div class="row-name-block">
+              <span class="row-name">Color Краска для бровей и ресниц 15 мл, оттенок натуральный КОРИЧНЕВЫЙ</span>
+              <span class="row-meta">арт. IGRO-9145 • бренд Lash Color</span>
+            </div>
+            <div class="row-right">
+              <div class="row-price-block">
+                <span class="row-price" data-price>1 440 ₽</span>
+                <span class="u-style-27" data-old-price hidden></span>
+              </div>
+              <span class="row-price-type" data-price-type>РРЦ со скидкой
+10% за объём</span>
+              <span class="row-price-badge" data-price-badge hidden>Цена по Акции</span>
+              <div class="row-qty">
+                <span class="row-unit-spacer">&nbsp;</span>
+                <div class="u-style-28" data-qty-stepper>
+                  <button type="button" class="qty-btn is-dec" aria-label="Уменьшить" data-qty-dec disabled>−</button>
+                  <input type="text" inputmode="numeric" class="qty-input" value="1" data-qty-input>
+                  <button type="button" class="qty-btn is-inc" aria-label="Увеличить" data-qty-inc>+</button>
+                </div>
+                <span class="row-per-unit" data-per-unit>&nbsp;</span>
+              </div>
+            </div>
+            <span class="u-style-29">
+              <div class="u-style-30" role="button" aria-label="Удалить" data-remove>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="u-style-31"><path d="M4 4L12 12M12 4L4 12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path></svg>
+              </div>
+            </span>
+          </div>
+
+          <div class="row has-border" data-row="r3">
+            <label class="row-check">
+              <input type="checkbox" class="u-style-18" data-check checked>
+              <span class="cb-box is-on"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" class="cb-check"><path d="M5 13l4 4L19 7" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
+            </label>
+            <div class="row-img" style="background-image:url(assets/products/concept.png)"></div>
+            <div class="row-name-block">
+              <span class="row-name">9.75 Крем-краска Светлый карамельн. блонд 100 мл, PROFY Touch Concept</span>
+              <span class="row-meta">арт. МТ56825 • бренд Concept</span>
+            </div>
+            <div class="row-right">
+              <div class="row-price-block">
+                <span class="row-price" data-price>1 800 ₽</span>
+                <span class="u-style-27" data-old-price hidden></span>
+              </div>
+              <span class="row-price-type" data-price-type>РРЦ со скидкой
+10% за объём</span>
+              <span class="row-price-badge" data-price-badge hidden>Цена по Акции</span>
+              <div class="row-qty">
+                <span class="row-unit-spacer">&nbsp;</span>
+                <div class="u-style-28" data-qty-stepper>
+                  <button type="button" class="qty-btn is-dec" aria-label="Уменьшить" data-qty-dec>−</button>
+                  <input type="text" inputmode="numeric" class="qty-input" value="2" data-qty-input>
+                  <button type="button" class="qty-btn is-inc" aria-label="Увеличить" data-qty-inc>+</button>
+                </div>
+                <span class="row-per-unit" data-per-unit>900 ₽/ед</span>
+              </div>
+            </div>
+            <span class="u-style-29">
+              <div class="u-style-30" role="button" aria-label="Удалить" data-remove>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="u-style-31"><path d="M4 4L12 12M12 4L4 12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path></svg>
+              </div>
+            </span>
+          </div>
+
+          <!-- Единственный товар с акцией по количеству: значок акции с подсказкой -->
+          <div class="row has-border" data-row="r4">
+            <label class="row-check">
+              <input type="checkbox" class="u-style-18" data-check checked>
+              <span class="cb-box is-on"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" class="cb-check"><path d="M5 13l4 4L19 7" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
+            </label>
+            <span class="row-promo" title="По этому товару действует акция" data-promo-badge>
+              <img class="row-promo-icon" src="assets/promo-badge-icon.svg" alt="Акция">
+              <span class="tip tip--promo" role="tooltip" data-promo-tip hidden>
+                <span class="tip-bridge"></span>
+                <span class="tip-text">На этот товар сейчас действует акция. Узнайте подробнее об условиях, чтобы получить скидку</span>
+                <a class="tip-link" href="https://www.igrobeauty.ru/personal/promo/" target="_blank" rel="noopener">Узнать больше</a>
+                <span class="tip-arrow"></span>
+              </span>
+            </span>
+            <div class="row-img" style="background-image:url(assets/products/soleo.png)"></div>
+            <div class="row-name-block">
+              <span class="row-name">Ускоритель загара Soleo Lolli Pop, 150 мл</span>
+              <span class="row-meta">арт. WBAST0005 • бренд Soleo</span>
+            </div>
+            <div class="row-right">
+              <div class="row-price-block">
+                <span class="row-price" data-price>621 ₽</span>
+                <span class="u-style-27" data-old-price hidden></span>
+              </div>
+              <span class="row-price-type" data-price-type>РРЦ со скидкой
+10% за объём</span>
+              <span class="row-price-badge" data-price-badge hidden>Цена по Акции</span>
+              <div class="row-qty">
+                <span class="row-unit-spacer">&nbsp;</span>
+                <div class="u-style-28" data-qty-stepper>
+                  <button type="button" class="qty-btn is-dec" aria-label="Уменьшить" data-qty-dec disabled>−</button>
+                  <input type="text" inputmode="numeric" class="qty-input" value="1" data-qty-input>
+                  <button type="button" class="qty-btn is-inc" aria-label="Увеличить" data-qty-inc>+</button>
+                </div>
+                <span class="row-per-unit" data-per-unit>&nbsp;</span>
+              </div>
+            </div>
+            <span class="u-style-29">
+              <div class="u-style-30" role="button" aria-label="Удалить" data-remove>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="u-style-31"><path d="M4 4L12 12M12 4L4 12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path></svg>
+              </div>
+            </span>
+          </div>
+
+        </div><!-- /regular -->
+
+        <!-- Группа: уценённые товары -->
+        <div class="tab-panel" data-panel="markdown" hidden>
+
+          <div class="row" data-row="m1">
+            <label class="row-check">
+              <input type="checkbox" class="u-style-18" data-check checked>
+              <span class="cb-box is-on"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" class="cb-check"><path d="M5 13l4 4L19 7" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
+            </label>
+            <div class="row-img" style="background-image:url(assets/products/levissime.png)"></div>
+            <div class="row-name-block">
+              <span class="row-name">Маска для волос восстанавливающая, 500 мл</span>
+              <span class="row-meta">арт. IGRO-2201 • бренд Kapous</span>
+            </div>
+            <div class="row-right">
+              <div class="row-price-block">
+                <span class="row-price" data-price>980 ₽</span>
+                <span class="u-style-27" data-old-price>1 400 ₽</span>
+              </div>
+              <span class="row-price-type" data-price-type></span>
+              <span class="row-price-badge" data-price-badge hidden>Цена по Акции</span>
+              <div class="row-qty">
+                <span class="row-unit-spacer">&nbsp;</span>
+                <div class="u-style-28" data-qty-stepper>
+                  <button type="button" class="qty-btn is-dec" aria-label="Уменьшить" data-qty-dec disabled>−</button>
+                  <input type="text" inputmode="numeric" class="qty-input" value="1" data-qty-input>
+                  <button type="button" class="qty-btn is-inc" aria-label="Увеличить" data-qty-inc>+</button>
+                </div>
+                <span class="row-per-unit" data-per-unit>&nbsp;</span>
+              </div>
+            </div>
+            <span class="u-style-29">
+              <div class="u-style-30" role="button" aria-label="Удалить" data-remove>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="u-style-31"><path d="M4 4L12 12M12 4L4 12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path></svg>
+              </div>
+            </span>
+          </div>
+
+          <div class="row has-border" data-row="m2">
+            <label class="row-check">
+              <input type="checkbox" class="u-style-18" data-check checked>
+              <span class="cb-box is-on"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" class="cb-check"><path d="M5 13l4 4L19 7" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
+            </label>
+            <div class="row-img" style="background-image:url(assets/products/iuver.png)"></div>
+            <div class="row-name-block">
+              <span class="row-name">Сыворотка для секущихся кончиков, 100 мл</span>
+              <span class="row-meta">арт. IGRO-2245 • бренд Concept</span>
+            </div>
+            <div class="row-right">
+              <div class="row-price-block">
+                <span class="row-price" data-price>784 ₽</span>
+                <span class="u-style-27" data-old-price>1 120 ₽</span>
+              </div>
+              <span class="row-price-type" data-price-type></span>
+              <span class="row-price-badge" data-price-badge hidden>Цена по Акции</span>
+              <div class="row-qty">
+                <span class="row-unit-spacer">&nbsp;</span>
+                <div class="u-style-28" data-qty-stepper>
+                  <button type="button" class="qty-btn is-dec" aria-label="Уменьшить" data-qty-dec>−</button>
+                  <input type="text" inputmode="numeric" class="qty-input" value="2" data-qty-input>
+                  <button type="button" class="qty-btn is-inc" aria-label="Увеличить" data-qty-inc>+</button>
+                </div>
+                <span class="row-per-unit" data-per-unit>392 ₽/ед</span>
+              </div>
+            </div>
+            <span class="u-style-29">
+              <div class="u-style-30" role="button" aria-label="Удалить" data-remove>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="u-style-31"><path d="M4 4L12 12M12 4L4 12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path></svg>
+              </div>
+            </span>
+          </div>
+
+          <div class="row has-border" data-row="m3">
+            <label class="row-check">
+              <input type="checkbox" class="u-style-18" data-check checked>
+              <span class="cb-box is-on"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" class="cb-check"><path d="M5 13l4 4L19 7" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
+            </label>
+            <div class="row-img" style="background-image:url(assets/products/lashcolor.png)"></div>
+            <div class="row-name-block">
+              <span class="row-name">Тоник-кондиционер для волос, 250 мл</span>
+              <span class="row-meta">арт. IGRO-2290 • бренд Levissime</span>
+            </div>
+            <div class="row-right">
+              <div class="row-price-block">
+                <span class="row-price" data-price>329 ₽</span>
+                <span class="u-style-27" data-old-price>470 ₽</span>
+              </div>
+              <span class="row-price-type" data-price-type></span>
+              <span class="row-price-badge" data-price-badge hidden>Цена по Акции</span>
+              <div class="row-qty">
+                <span class="row-unit-spacer">&nbsp;</span>
+                <div class="u-style-28" data-qty-stepper>
+                  <button type="button" class="qty-btn is-dec" aria-label="Уменьшить" data-qty-dec disabled>−</button>
+                  <input type="text" inputmode="numeric" class="qty-input" value="1" data-qty-input>
+                  <button type="button" class="qty-btn is-inc" aria-label="Увеличить" data-qty-inc>+</button>
+                </div>
+                <span class="row-per-unit" data-per-unit>&nbsp;</span>
+              </div>
+            </div>
+            <span class="u-style-29">
+              <div class="u-style-30" role="button" aria-label="Удалить" data-remove>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="u-style-31"><path d="M4 4L12 12M12 4L4 12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path></svg>
+              </div>
+            </span>
+          </div>
+
+          <div class="row has-border" data-row="m4">
+            <label class="row-check">
+              <input type="checkbox" class="u-style-18" data-check checked>
+              <span class="cb-box is-on"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" class="cb-check"><path d="M5 13l4 4L19 7" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
+            </label>
+            <div class="row-img" style="background-image:url(assets/products/iuver.png)"></div>
+            <div class="row-name-block">
+              <span class="row-name">Бальзам-уход после окрашивания, 200 мл</span>
+              <span class="row-meta">арт. IGRO-2310 • бренд Kapous</span>
+            </div>
+            <div class="row-right">
+              <div class="row-price-block">
+                <span class="row-price" data-price>497 ₽</span>
+                <span class="u-style-27" data-old-price>710 ₽</span>
+              </div>
+              <span class="row-price-type" data-price-type></span>
+              <span class="row-price-badge" data-price-badge hidden>Цена по Акции</span>
+              <div class="row-qty">
+                <span class="row-unit-spacer">&nbsp;</span>
+                <div class="u-style-28" data-qty-stepper>
+                  <button type="button" class="qty-btn is-dec" aria-label="Уменьшить" data-qty-dec disabled>−</button>
+                  <input type="text" inputmode="numeric" class="qty-input" value="1" data-qty-input>
+                  <button type="button" class="qty-btn is-inc" aria-label="Увеличить" data-qty-inc>+</button>
+                </div>
+                <span class="row-per-unit" data-per-unit>&nbsp;</span>
+              </div>
+            </div>
+            <span class="u-style-29">
+              <div class="u-style-30" role="button" aria-label="Удалить" data-remove>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="u-style-31"><path d="M4 4L12 12M12 4L4 12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path></svg>
+              </div>
+            </span>
+          </div>
+
+        </div><!-- /markdown -->
+
+        <!-- Группа: специальные акции. Внутри — разделители по названию акции,
+             количество зафиксировано на одной штуке. -->
+        <div class="tab-panel" data-panel="promo" hidden>
+
+          <div class="promo-header is-first">
+            <span class="u-style-26">АКЦИЯ "СЕБЕ ЛЮБИМОЙ"</span>
+          </div>
+
+          <div class="row has-border" data-row="p1">
+            <label class="row-check">
+              <input type="checkbox" class="u-style-18" data-check checked>
+              <span class="cb-box is-on"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" class="cb-check"><path d="M5 13l4 4L19 7" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
+            </label>
+            <div class="row-img" style="background-image:url(assets/products/nirvel.png)"></div>
+            <div class="row-name-block">
+              <span class="row-name">Шампунь восстанавливающий 1000 мл</span>
+              <span class="row-meta">арт. IGRO-5750 • бренд Nirvel</span>
+            </div>
+            <div class="row-right">
+              <div class="row-price-block">
+                <span class="row-price" data-price>417 ₽</span>
+                <span class="u-style-27" data-old-price>500 ₽</span>
+              </div>
+              <span class="row-price-type" data-price-type></span>
+              <span class="row-price-badge" data-price-badge hidden>Цена по Акции</span>
+              <div class="row-qty">
+                <span class="row-unit-spacer">&nbsp;</span>
+                <div class="qty-locked" data-qty-locked>1 максимум</div>
+                <span class="row-per-unit" data-per-unit>&nbsp;</span>
+              </div>
+            </div>
+            <span class="u-style-29">
+              <div class="u-style-30" role="button" aria-label="Удалить" data-remove>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="u-style-31"><path d="M4 4L12 12M12 4L4 12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path></svg>
+              </div>
+            </span>
+          </div>
+
+          <div class="row has-border" data-row="p2">
+            <label class="row-check">
+              <input type="checkbox" class="u-style-18" data-check checked>
+              <span class="cb-box is-on"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" class="cb-check"><path d="M5 13l4 4L19 7" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
+            </label>
+            <div class="row-img" style="background-image:url(assets/products/levis-younglife.png)"></div>
+            <div class="row-name-block">
+              <span class="row-name">LeviSsime Крем антиоксидантный д/молодой кожи Young Life Glass Skin 50 мл</span>
+              <span class="row-meta">арт. 4758 • бренд Levissime</span>
+            </div>
+            <div class="row-right">
+              <div class="row-price-block">
+                <span class="row-price" data-price>1 320 ₽</span>
+                <span class="u-style-27" data-old-price>1 650 ₽</span>
+              </div>
+              <span class="row-price-type" data-price-type></span>
+              <span class="row-price-badge" data-price-badge hidden>Цена по Акции</span>
+              <div class="row-qty">
+                <span class="row-unit-spacer">&nbsp;</span>
+                <div class="qty-locked" data-qty-locked>1 максимум</div>
+                <span class="row-per-unit" data-per-unit>&nbsp;</span>
+              </div>
+            </div>
+            <span class="u-style-29">
+              <div class="u-style-30" role="button" aria-label="Удалить" data-remove>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="u-style-31"><path d="M4 4L12 12M12 4L4 12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path></svg>
+              </div>
+            </span>
+          </div>
+
+          <div class="row has-border" data-row="p3">
+            <label class="row-check">
+              <input type="checkbox" class="u-style-18" data-check checked>
+              <span class="cb-box is-on"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" class="cb-check"><path d="M5 13l4 4L19 7" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
+            </label>
+            <div class="row-img" style="background-image:url(assets/products/levis-hydrage.png)"></div>
+            <div class="row-name-block">
+              <span class="row-name">LeviSsime Крем увлажняющий ночной для лица / Hydrage be.Essential Night Cream 50 мл</span>
+              <span class="row-meta">арт. МТ4737145 • бренд Levissime</span>
+            </div>
+            <div class="row-right">
+              <div class="row-price-block">
+                <span class="row-price" data-price>1 360 ₽</span>
+                <span class="u-style-27" data-old-price>1 700 ₽</span>
+              </div>
+              <span class="row-price-type" data-price-type></span>
+              <span class="row-price-badge" data-price-badge hidden>Цена по Акции</span>
+              <div class="row-qty">
+                <span class="row-unit-spacer">&nbsp;</span>
+                <div class="qty-locked" data-qty-locked>1 максимум</div>
+                <span class="row-per-unit" data-per-unit>&nbsp;</span>
+              </div>
+            </div>
+            <span class="u-style-29">
+              <div class="u-style-30" role="button" aria-label="Удалить" data-remove>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="u-style-31"><path d="M4 4L12 12M12 4L4 12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path></svg>
+              </div>
+            </span>
+          </div>
+
+        </div><!-- /promo -->
+
+        <!-- Показывается, когда в активной группе не осталось товаров -->
+        <div class="u-style-32" data-empty hidden>В этой группе пока нет товаров.</div>
+
+      </div><!-- /tabs-card -->
+
+      <div class="keep-notice" data-keep-notice>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="keep-notice-icon"><path d="M17 18C17.5304 18 18.0391 18.2107 18.4142 18.5858C18.7893 18.9609 19 19.4696 19 20C19 20.5304 18.7893 21.0391 18.4142 21.4142C18.0391 21.7893 17.5304 22 17 22C16.4696 22 15.9609 21.7893 15.5858 21.4142C15.2107 21.0391 15 20.5304 15 20C15 18.89 15.89 18 17 18ZM1 2H4.27L5.21 4H20C20.2652 4 20.5196 4.10536 20.7071 4.29289C20.8946 4.48043 21 4.73478 21 5C21 5.17 20.95 5.34 20.88 5.5L17.3 11.97C16.96 12.58 16.3 13 15.55 13H8.1L7.2 14.63L7.17 14.75C7.17 14.8163 7.19634 14.8799 7.24322 14.9268C7.29011 14.9737 7.3537 15 7.42 15H19V17H7C6.46957 17 5.96086 16.7893 5.58579 16.4142C5.21071 16.0391 5 15.5304 5 15C5 14.65 5.09 14.32 5.24 14.04L6.6 11.59L3 4H1V2ZM7 18C7.53043 18 8.03914 18.2107 8.41421 18.5858C8.78929 18.9609 9 19.4696 9 20C9 20.5304 8.78929 21.0391 8.41421 21.4142C8.03914 21.7893 7.53043 22 7 22C6.46957 22 5.96086 21.7893 5.58579 21.4142C5.21071 21.0391 5 20.5304 5 20C5 18.89 5.89 18 7 18ZM16 11L18.78 6H6.14L8.5 11H16Z" fill="currentColor"></path></svg>
+        <span class="keep-notice-text">Все невыбранные товары останутся в корзине после оформления заказа</span>
+      </div>
+
+    </div>
+  </div><!-- /левая колонка -->
+
+  <!-- Правая колонка: итог заказа -->
+  <div class="summary-col">
+    <div class="u-style-43">
+      <h2 class="u-style-44">Итог</h2>
+      <div class="u-style-45">
+        <div class="u-style-46">
+          <div class="u-style-47"><span class="u-style-48">Товары</span><span class="u-style-49" data-sum-goods>16 290 ₽</span></div>
+          <!-- Три возможные строки скидки; видима та, что реально применилась -->
+          <div class="u-style-47" data-disc="stat" hidden><span class="u-style-48" data-disc-label>Скидка по статусу</span><span class="u-style-50" data-disc-amount></span></div>
+          <div class="u-style-47" data-disc="vol"><span class="u-style-48" data-disc-label>Скидка за объём (10%)</span><span class="u-style-50" data-disc-amount>−1 629 ₽</span></div>
+          <div class="u-style-47" data-disc="promo" hidden><span class="u-style-48" data-disc-label>Скидка по акции (от 25 шт.)</span><span class="u-style-50" data-disc-amount></span></div>
+        </div>
+        <div class="u-style-51" data-markdown-sep></div>
+        <div class="u-style-46" data-markdown-sum>
+          <div class="u-style-47"><span class="u-style-48">Уценённые товары</span><span class="u-style-49" data-sum-markdown>3 700 ₽</span></div>
+          <div class="u-style-47"><span class="u-style-48">Уценка</span><span class="u-style-50" data-sum-markdown-disc>−1 110 ₽</span></div>
+        </div>
+        <div class="u-style-51" data-promo-sep></div>
+        <div class="u-style-46" data-promo-sum>
+          <div class="u-style-47"><span class="u-style-48">Товары по акции</span><span class="u-style-49" data-sum-promo>3 850 ₽</span></div>
+          <div class="u-style-47"><span class="u-style-48">Выгода</span><span class="u-style-50" data-sum-promo-disc>−753 ₽</span></div>
+        </div>
+      </div>
+      <div class="u-style-52"></div>
+      <div class="u-style-53">
+        <span class="u-style-54">К оплате</span>
+        <span class="u-style-55" data-sum-total>20 348 ₽</span>
+      </div>
+      <div class="u-style-56">
+        <span class="u-style-57">Общая экономия</span>
+        <span class="u-style-58" data-sum-savings>3 492 ₽</span>
+      </div>
+
+      <!-- Неавторизованному (РРЦ) показываются две кнопки, остальным — одна -->
+      <button type="button" class="ds-btn-primary-lg checkout-reg" data-btn-reg>
+        <span class="u-style-59">Оформить с регистрацией</span>
+      </button>
+      <button type="button" class="co-noreg-btn btn-lg" data-btn-noreg>
+        <span class="u-style-59">Купить без регистрации</span>
+      </button>
+      <button type="button" class="ds-btn-primary-lg checkout-btn" data-btn-checkout hidden>
+        <span class="u-style-59">Перейти к оформлению</span>
+      </button>
+
+      <span class="checkout-hint">Доступные способы и время доставки можно выбрать при оформлении заказа</span>
+    </div>
+
+    <div class="promo-notice" data-promo-notice>
+      <img class="promo-notice-icon" src="assets/promo-badge-icon.svg" alt="Акция">
+      <span class="promo-notice-text">В корзине есть товары, входящие в состав акций. Узнайте <a class="promo-notice-link" href="https://www.igrobeauty.ru/personal/promo/" target="_blank" rel="noopener">подробнее об условиях</a></span>
+    </div>
+  </div><!-- /правая колонка -->
+
+  </div><!-- /cart-grid -->
+</div>
+</div>
+
+<!-- Попап оформления заказа (сценарий РРЦ / покупка без регистрации) -->
+<div class="modal-overlay" data-modal hidden>
+  <div class="modal-card" role="dialog" aria-modal="true" data-modal-card>
+    <button type="button" class="co-modal-close modal-close" aria-label="Закрыть" data-modal-close>
+      <svg width="18" height="18" viewBox="0 0 16 16" fill="none"><path d="M4 4L12 12M12 4L4 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path></svg>
+    </button>
+    <h2 class="modal-title">Оформление заказа</h2>
+    <p class="modal-subtitle">Введите имя и номер мобильного телефона</p>
+    <div class="modal-fields">
+      <input type="text" class="co-input modal-input" placeholder="*ФИО" data-form-name>
+      <input type="email" class="co-input modal-input" placeholder="*E-mail" data-form-email>
+      <input type="tel" class="co-input modal-input" placeholder="+7 (___) ___-__-__" data-form-phone>
+    </div>
+    <div class="modal-checks">
+      <label class="modal-check-row">
+        <input type="checkbox" class="u-style-18" data-agree="1">
+        <span class="cb-box modal-cb">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" class="cb-check"><path d="M5 13l4 4L19 7" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+        </span>
+        <span class="modal-check-text">Ознакомлен с <a class="modal-link" href="https://www.igrobeauty.ru/" target="_blank" rel="noopener">Политикой в отношении обработки персональных данных</a></span>
+      </label>
+      <label class="modal-check-row">
+        <input type="checkbox" class="u-style-18" data-agree="2">
+        <span class="cb-box modal-cb">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" class="cb-check"><path d="M5 13l4 4L19 7" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+        </span>
+        <span class="modal-check-text">Даю согласие на обработку персональных данных <a class="modal-link" href="https://www.igrobeauty.ru/" target="_blank" rel="noopener">с установленной формой</a></span>
+      </label>
+    </div>
+    <div class="modal-total-row">
+      <div class="modal-total-left">
+        <span class="modal-total-label">Сумма заказа:</span>
+        <span class="modal-total-value" data-modal-total>20 348 ₽</span>
+      </div>
+      <button type="button" class="co-confirm-btn modal-confirm" disabled data-modal-confirm>Подтвердить</button>
+    </div>
+    <p class="modal-note">После оформления заказа наши менеджеры свяжутся с вами в течение 1 часа (если вы делаете заказ в рабочее время с 9:00 до 18:30 по московскому времени), сверят с вами заказ и уточнят необходимые данные для доставки.</p>
+  </div>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/calc.js"></script>
+<script src="js/view.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
