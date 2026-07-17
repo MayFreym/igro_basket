@@ -46,7 +46,7 @@ window.Cart.view = (() => {
     setShown($("[data-mm-pill]"), masterMobile);
     setShown($("[data-mm-gift]"), masterMobile);
     setText($("[data-mm-tip-text]"), m.badges[0] ? (m.badges[0].tip || "") : "");
-    setShown($("[data-mm-tip]"), masterMobile && state.openTip === "mm-pill");
+    setClass($("[data-mm-tip]"), "is-open", masterMobile && state.openTip === "mm-pill");
 
     setShown($("[data-rrc-m-pill]"), rrcMobile);
     setShown($("[data-rrc-m-desc]"), rrcMobile);
@@ -85,7 +85,7 @@ window.Cart.view = (() => {
       setShown($("[data-badge-icon]", el), !!b.tip);
       setText($("[data-badge-text]", el), b.t);
       setText($("[data-badge-tip-text]", el), b.tip || "");
-      setShown($("[data-badge-tip]", el), open);
+      setClass($("[data-badge-tip]", el), "is-open", open);
     });
   }
 
@@ -128,9 +128,11 @@ window.Cart.view = (() => {
   }
 
   // --- шкала скидки за объём ---
-  function renderVolume(m) {
+  function renderVolume(m, state) {
     setShown($("[data-volume-bar]"), m.showVolumeBar);
     setText($("[data-volume-status]"), m.volumeStatusText);
+    // Наведение показывает CSS; класс нужен для клика на тач-экранах.
+    setClass($("[data-vol-tip]"), "is-open", state.volTipOpen);
     m.volumeSegments.forEach(seg => {
       const el = $('[data-seg="' + seg.id + '"]');
       if (!el) return;
@@ -180,7 +182,7 @@ window.Cart.view = (() => {
       renderCheckbox($(".row-check .cb-box", el), r.checked ? "on" : "off");
 
       setShown($("[data-promo-badge]", el), r.hasPromoBadge);
-      setShown($("[data-promo-tip]", el), r.hasPromoBadge && state.promoTipOpen === r.id);
+      setClass($("[data-promo-tip]", el), "is-open", r.hasPromoBadge && state.promoTipOpen === r.id);
 
       // Счётчик либо плашка «1 максимум» — у акционных товаров количество заперто.
       setShown($("[data-qty-stepper]", el), !r.qtyLocked);
@@ -269,7 +271,7 @@ window.Cart.view = (() => {
 
     renderStatusBand(m, state);
     renderTabs(m, state);
-    renderVolume(m);
+    renderVolume(m, state);
     renderRows(m, state);
     renderSummary(m);
     renderModal(m, state);

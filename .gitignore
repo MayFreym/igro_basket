@@ -3,6 +3,8 @@
 # заметки остаются только на локальной машине.
 NOTES.md
 RECOMMENDATIONS.md
+AUDIT.md
+FIXES.md
 docs/claude-memory/
 
 # Служебное окружение: содержит локальные пути к машине разработчика.

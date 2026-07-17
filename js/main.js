@@ -76,7 +76,10 @@
     // Клик по затемнению мимо карточки закрывает попап.
     if (t.matches("[data-modal]")) { update({ checkoutModalOpen: false }); return; }
 
-    // Подсказки переключаются кликом — на тач-экранах наведения нет.
+    // Дальше — только подсказки, и только там, где нет наведения: на мыши ими
+    // целиком управляет CSS, клик не должен оставлять их открытыми после ухода.
+    if (window.matchMedia("(hover: hover)").matches) return;
+
     if (t.closest("[data-vol-tip-wrap]")) { update({ volTipOpen: !state.volTipOpen }); return; }
 
     const badge = t.closest("[data-badge]");
@@ -91,40 +94,9 @@
     if (promo) { const id = rowIdOf(promo); update({ promoTipOpen: state.promoTipOpen === id ? null : id }); return; }
   });
 
-  // --- наведение на подсказки ---
-  // mouseenter не всплывает, поэтому слушаем mouseover/mouseout на документе.
-  let promoLeaveT = null;
-  document.addEventListener("mouseover", (e) => {
-    const t = e.target;
-    if (t.closest("[data-vol-tip-wrap]")) update({ volTipOpen: true });
-    const badge = t.closest("[data-badge]");
-    if (badge && badge.querySelector("[data-badge-tip-text]").textContent) {
-      update({ openTip: "badge-" + badge.dataset.badge });
-    }
-    if (t.closest("[data-mm-pill]")) update({ openTip: "mm-pill" });
-    const promo = t.closest("[data-promo-badge]");
-    if (promo) {
-      if (promoLeaveT) { clearTimeout(promoLeaveT); promoLeaveT = null; }
-      update({ promoTipOpen: rowIdOf(promo) });
-    }
-  });
-
-  document.addEventListener("mouseout", (e) => {
-    const t = e.target, to = e.relatedTarget;
-    // Уход внутрь того же элемента — не уход.
-    const left = (sel) => t.closest(sel) && !(to && to.closest && to.closest(sel));
-    if (left("[data-vol-tip-wrap]")) update({ volTipOpen: false });
-    if (left("[data-badge]")) update({ openTip: null });
-    if (left("[data-mm-pill]")) update({ openTip: null });
-    // У значка акции уход с задержкой: даёт увести курсор в саму подсказку.
-    if (left("[data-promo-badge]")) {
-      const id = rowIdOf(t.closest("[data-promo-badge]"));
-      if (promoLeaveT) clearTimeout(promoLeaveT);
-      promoLeaveT = setTimeout(() => {
-        if (state.promoTipOpen === id) update({ promoTipOpen: null });
-      }, 120);
-    }
-  });
+  // Наведения здесь нет: подсказки открывает CSS по :hover. Подсказка лежит
+  // внутри своего триггера, поэтому :hover держится и когда курсор в ней самой,
+  // а зазор закрывает .tip-bridge — задержка на уход больше не нужна.
 
   // --- переключатели и поля ---
   document.addEventListener("change", (e) => {

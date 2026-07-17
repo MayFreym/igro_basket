@@ -317,7 +317,20 @@ img { display: block; }
 .rrc-m-gift-icon { flex:none;display:block; }
 
 /* --- Всплывающие подсказки --- */
-.tip { position:absolute;bottom:calc(100% + 12px);left:50%;transform:translateX(-50%);width:290px;white-space:normal;background:#4A4A4A;color:#FFFFFF;padding:14px 16px;border-radius:12px;box-shadow:0 8px 28px rgba(0,0,0,0.28);z-index:80;text-align:left;cursor:default;text-transform:none;letter-spacing:-0.16px; }
+/* Подсказки скрыты по умолчанию. Наведением их показывает CSS, кликом — класс
+   is-open от JS: на тач-экранах наведения нет. Атрибут hidden здесь не годится,
+   его [hidden]{display:none!important} перебил бы правило :hover. */
+.tip { display:none;position:absolute;bottom:calc(100% + 12px);left:50%;transform:translateX(-50%);width:290px;white-space:normal;background:#4A4A4A;color:#FFFFFF;padding:14px 16px;border-radius:12px;box-shadow:0 8px 28px rgba(0,0,0,0.28);z-index:80;text-align:left;cursor:default;text-transform:none;letter-spacing:-0.16px; }
+/* Подсказка лежит внутри своего триггера, поэтому :hover держится, пока курсор
+   в ней самой; зазор закрывает .tip-bridge. Отдельная задержка не нужна.
+   (hover:hover) отсекает тач: iOS оставляет :hover после тапа. */
+@media (hover: hover) {
+  .vol-tip-wrap:hover .tip,
+  .status-badge.has-tip:hover .tip,
+  .mm-pill:hover .tip,
+  .row-promo:hover .tip { display:block; }
+}
+.tip.is-open { display:block; }
 .tip-text { display:block;font-family:var(--font-body);font-weight:400;font-size:14px;line-height:1.4;letter-spacing:-0.16px;color:#FFFFFF;text-transform:none;white-space:normal; }
 .tip-link { display:inline-block;margin-top:8px;font-family:var(--font-body);font-weight:600;font-size:14px;letter-spacing:-0.16px;color:#7FCF9F;text-decoration:none; }
 .tip-arrow { position:absolute;top:100%;left:50%;transform:translateX(-50%) rotate(45deg);margin-top:-6px;width:12px;height:12px;background:#4A4A4A; }
