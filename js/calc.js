@@ -17,6 +17,8 @@ window.Cart.calc = (() => {
   const neg = (n) => (n > 0 ? "−" : "") + fmt(n);
 
   const clampQ = (v) => Math.min(QMAX, Math.max(QMIN, v));
+  // МЁРТВОЕ: кормит только r.imgUrl, который view.js не читает — картинки в
+  // разметке статические. См. FIXES.md #11.
   const imgUrl = (name) => "assets/products/" + name + ".png";
 
   // Главный расчёт. state: { qty, checked, removed, activeGroup, status,
@@ -34,6 +36,12 @@ window.Cart.calc = (() => {
     const groups = enabledCatalog.map(g => {
       const items = g.items.filter(it => !removed[it.id]);
       const checkedItems = items.filter(it => checked[it.id]);
+      // ВОПРОС ВЛАДЕЛЬЦУ, не баг под починку: сумма берёт it.unit без mult и без
+      // скидок — единственное число на странице на другой ценовой базе. Поэтому
+      // она не сходится со строками под ней НИ ПРИ ОДНОМ статусе и вообще не
+      // реагирует на статус: стоит 7 330 ₽ для всех, пока строки идут от 6 209
+      // (Супер VIP) до 14 661 (РРЦ, ровно вдвое). Итог и строки между собой
+      // согласованы — расходится только это. См. FIXES.md #14.
       const sum = checkedItems.reduce((a, it) => a + Math.round(it.unit * q(it)), 0);
       return { ...g, items, checkedItems, sum };
     });
@@ -52,6 +60,7 @@ window.Cart.calc = (() => {
     // --- скидка за объём ---
     // Считается по розничной сумме выбранных обычных товаров до всех скидок.
     // У РРЦ розничная база вдвое выше мастерской (mult).
+    // ДУБЛЬ: то же самое ниже как statusMult. См. FIXES.md #11.
     const volMult = cur.mult || 1;
     const regRetailSum = regularG.items.reduce((acc, it) =>
       acc + (checked[it.id] ? (it.retail != null ? it.retail : it.unit) * volMult * q(it) : 0), 0);
@@ -93,7 +102,10 @@ window.Cart.calc = (() => {
 
     // Единый расчёт цены обычного товара — им пользуются и строки, и итоги,
     // поэтому суммы не расходятся.
-    const statusMult = cur.mult || 1;
+    const statusMult = cur.mult || 1; // ДУБЛЬ volMult выше.
+    // МЁРТВОЕ: единственный читатель — `cur.noDiscLabel || priceRoot` ниже, а эта
+    // ветка живёт только при нулевой скидке, то есть у rrc и master — и у обоих
+    // noDiscLabel задан. Остальные статусы имеют base >= 10 и до неё не доходят.
     const priceRoot = cur.priceRoot || "Проф. Цена";
     const shortRoot = cur.shortRoot || "ПЦ";
     const priceInfoOf = (it, nOverride) => {
@@ -125,6 +137,9 @@ window.Cart.calc = (() => {
       // Заполнение активного сегмента — положение суммы между началом и концом порога.
       const fillPct = achieved ? 100
         : (isActive ? Math.max(0, Math.min(100, ((regRetailSum - prev) / (t.threshold - prev)) * 100)) : 0);
+      // МЁРТВОЕ: amount и percent никто не читает — суммы порогов и проценты в
+      // разметке статические. amount вдобавок дорогой: fmt() это Intl, пять
+      // вызовов впустую на каждый пересчёт (~150 мкс). См. FIXES.md #11 и #6.
       return { id: String(t.threshold), amount: fmt(t.threshold), percent: t.label, achieved, isBig, isApplied, fillPct };
     });
 
@@ -164,6 +179,9 @@ window.Cart.calc = (() => {
       return {
         id: it.id,
         isHeader: false,
+        // МЁРТВОЕ: view.js не рисует ни имени, ни артикула, ни картинки — всё это
+        // в разметке статическое. Готовится на каждый пересчёт и выбрасывается.
+        // Выкидывать не спешить: в бою их напечатает $arResult. См. FIXES.md #10.
         name: it.name,
         meta: "арт. " + it.art + "  •  бренд " + it.brand,
         imgUrl: imgUrl(it.img),
@@ -197,6 +215,8 @@ window.Cart.calc = (() => {
       rows = [];
       let isFirst = true;
       groupOrder.forEach(gName => {
+        // isHeader живой: по нему view.js решает, показывать ли .promo-header.
+        // А title и isFirstHeader — мёртвые, заголовки в разметке статические.
         rows.push({ id: "h-" + gName, isHeader: true, title: gName, isFirstHeader: isFirst });
         isFirst = false;
         groupMap[gName].forEach(it => { rows.push(makeRow(it, true)); });
@@ -212,6 +232,9 @@ window.Cart.calc = (() => {
     let mGoods = 0, mDisc = 0, pGoods = 0, pDisc = 0;
     catalog.forEach(g => g.items.forEach(it => {
       if (removed[it.id] || !checked[it.id]) return;
+      // ОСТОРОЖНО, ДУБЛЬ: правило включённых вкладок повторяет enabledCatalog
+      // выше. Разойдутся эти два места — суммы разъедутся молча, без ошибки.
+      // См. FIXES.md #11: единственный пункт здесь с денежным риском.
       if (g.id === "markdown" && !showMarkdownTab) return;
       if (g.id === "promo" && !showPromoTab) return;
       const n = q(it);
@@ -227,6 +250,9 @@ window.Cart.calc = (() => {
         mDisc += ((it.old || it.unit) - it.unit) * n;
       } else if (g.kind === "promo") {
         pGoods += (it.list || it.unit) * n;
+        // НЕСИММЕТРИЧНО: здесь Math.round, а у mDisc выше — нет. Без причины.
+        // Сейчас на копейки не влияет (итог всё равно округляется), но это
+        // ловушка для того, кто будет менять формулу. См. FIXES.md #11.
         pDisc += Math.round(((it.list || it.unit) - it.unit) * n);
       }
     }));
@@ -247,6 +273,7 @@ window.Cart.calc = (() => {
     const totalPositions = enabledCatalog.reduce((a, g) => a + g.items.filter(it => !removed[it.id]).length, 0);
 
     return {
+      // МЁРТВОЕ: status и activeGroupKind ниже — ноль читателей в view.js.
       status: cur,
       isMaster: cur.id === "master",
       isUnauth: cur.id === "rrc",
@@ -288,5 +315,8 @@ window.Cart.calc = (() => {
     return out;
   }
 
+  // fmt и neg снаружи никто не читает — используются только внутри. Убирать из
+  // экспорта в последнюю очередь: после переезда на Битрикс форматирование может
+  // понадобиться шаблону. См. FIXES.md #11.
   return { compute, fmt, neg, clampQ, applyPhoneMask };
 })();

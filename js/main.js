@@ -4,6 +4,8 @@
 (() => {
   "use strict";
 
+  // МЁРТВОЕ: QMAX здесь не используется — ограничение сверху накладывает clampQ
+  // внутри calc.js. См. FIXES.md #13.
   const { catalog, QMIN, QMAX } = window.Cart.data;
   const { clampQ, applyPhoneMask } = window.Cart.calc;
   const { refresh, fillStatusSelect } = window.Cart.view;
@@ -43,6 +45,11 @@
   }
 
   const rowIdOf = (el) => { const r = el.closest("[data-row]"); return r ? r.dataset.row : null; };
+  // ЛИШНИЙ ЦИКЛ: state.qty заполняется для всех позиций на старте (строка выше), а
+  // update только копирует его через spread — значит state.qty[id] есть всегда,
+  // `?? it.qty` не срабатывает никогда, и обход каталога ищет запасное значение,
+  // до которого не дойти. Эквивалент: (id) => state.qty[id] ?? QMIN.
+  // См. FIXES.md #13.
   const qtyOf = (id) => {
     for (const g of catalog) for (const it of g.items) if (it.id === id) return state.qty[id] ?? it.qty;
     return QMIN;
@@ -55,7 +62,10 @@
     // Клик внутри подсказки не должен её закрывать.
     if (t.closest(".tip")) { e.stopPropagation(); return; }
 
-    // Переключение вкладки. Клик по её чекбоксу сюда не доходит.
+    // Переключение вкладки. Клик по чекбоксу вкладки сюда ДОХОДИТ — его отсеивает
+    // проверка !t.closest("[data-tab-check]") ниже. Убрать её, решив что «не
+    // доходит», — и клик по чекбоксу начнёт заодно переключать вкладку.
+    // (Прежний комментарий утверждал обратное. См. FIXES.md #13.)
     const tab = t.closest("[data-tab]");
     if (tab && !t.closest("[data-tab-check]")) { update({ activeGroup: tab.dataset.tab }); return; }
 
@@ -78,6 +88,9 @@
 
     // Дальше — только подсказки, и только там, где нет наведения: на мыши ими
     // целиком управляет CSS, клик не должен оставлять их открытыми после ухода.
+    // МЕЛОЧЬ: matchMedia зовётся на каждый клик, каждый раз новый объект. Поднять
+    // наверх один раз — MediaQueryList живой, .matches продолжит отвечать на
+    // смену устройства. См. FIXES.md #13.
     if (window.matchMedia("(hover: hover)").matches) return;
 
     if (t.closest("[data-vol-tip-wrap]")) { update({ volTipOpen: !state.volTipOpen }); return; }
@@ -116,6 +129,9 @@
       return;
     }
 
+    // ЛЕСА ПРОТОТИПА: этот обработчик и data-toggle-tab ниже обслуживают служебную
+    // панель, которой в бою нет. В бою статус приходит из авторизации и не
+    // меняется. См. FIXES.md #13 и #12.
     if (t.matches("[data-status-select]")) { update({ status: t.value }); return; }
 
     const toggle = t.closest("[data-toggle-tab]");
@@ -151,6 +167,8 @@
   });
 
   // Клик в поле количества выделяет содержимое — удобно набрать новое число.
+  // Оборотная сторона, размен осознанный: поставить каретку в середину числа
+  // мышью становится нельзя. Не баг, не «чинить». См. FIXES.md #13.
   document.addEventListener("focusin", (e) => {
     if (e.target.matches("[data-qty-input]") && e.target.select) e.target.select();
   });
