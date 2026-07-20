@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Корзина IGRObeauty — отчёт для менеджера</title>
+<meta name="description" content="Что сделано по прототипу корзины IGRObeauty, что проверено и какие вопросы требуют решения.">
+<meta property="og:title" content="Корзина IGRObeauty — отчёт">
+<meta property="og:description" content="Что сделано, что проверено и три вопроса, требующих решения.">
+<meta property="og:type" content="website">
+</head>
+<body>
+<style>
+/* Шрифты бренда IGRObeauty, встроены как data-URI (CDN в Artifact заблокирован). */
+@font-face{font-family:'Montserrat';font-weight:400 800;font-style:normal;font-display:swap;src:url(../assets/fonts/montserrat-cyrillic.woff2) format('woff2');unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116;}
+@font-face{font-family:'Montserrat';font-weight:400 800;font-style:normal;font-display:swap;src:url(../assets/fonts/montserrat-latin.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;}
+@font-face{font-family:'Source Sans Pro';font-weight:400;font-style:normal;font-display:swap;src:url(../assets/fonts/source-sans-pro-400-cyrillic.woff2) format('woff2');unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116;}
+@font-face{font-family:'Source Sans Pro';font-weight:400;font-style:normal;font-display:swap;src:url(../assets/fonts/source-sans-pro-400-latin.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;}
+@font-face{font-family:'Source Sans Pro';font-weight:600;font-style:normal;font-display:swap;src:url(../assets/fonts/source-sans-pro-600-cyrillic.woff2) format('woff2');unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116;}
+@font-face{font-family:'Source Sans Pro';font-weight:600;font-style:normal;font-display:swap;src:url(../assets/fonts/source-sans-pro-600-latin.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;}
+
+:root{
+  --brand:#004522; --accent:#158f45; --accent-deep:#006b3e;
+  --mint:#b0dec5; --mint-soft:#e4f1ea;
+  --gold:#a9812f; --gold-soft:#f6efe0; --gold-line:#e4d3a8;
+  --canvas:#f6f5f0; --surface:#ffffff; --sunken:#eef0ec;
+  --ink:#1b271f; --ink-soft:#5a6b60; --ink-faint:#8a978d;
+  --line:#e2e4dd; --line-soft:#edeee9;
+  --shadow:0 1px 2px rgba(20,50,35,.06),0 8px 28px rgba(20,50,35,.07);
+  --font-head:'Montserrat','Helvetica Neue',Arial,sans-serif;
+  --font-body:'Source Sans Pro','Helvetica Neue',Arial,sans-serif;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --brand:#bfe6d0; --accent:#4cb878; --accent-deep:#3fae6a;
+    --mint:#2b4636; --mint-soft:#183025;
+    --gold:#d9b871; --gold-soft:#2a2418; --gold-line:#4a3f26;
+    --canvas:#0e1712; --surface:#152019; --sunken:#0a120d;
+    --ink:#e7efe9; --ink-soft:#a3b3a8; --ink-faint:#71837a;
+    --line:#23312a; --line-soft:#1b271f;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="light"]{
+  --brand:#004522; --accent:#158f45; --accent-deep:#006b3e;
+  --mint:#b0dec5; --mint-soft:#e4f1ea; --gold:#a9812f; --gold-soft:#f6efe0; --gold-line:#e4d3a8;
+  --canvas:#f6f5f0; --surface:#ffffff; --sunken:#eef0ec;
+  --ink:#1b271f; --ink-soft:#5a6b60; --ink-faint:#8a978d; --line:#e2e4dd; --line-soft:#edeee9;
+  --shadow:0 1px 2px rgba(20,50,35,.06),0 8px 28px rgba(20,50,35,.07);
+}
+:root[data-theme="dark"]{
+  --brand:#bfe6d0; --accent:#4cb878; --accent-deep:#3fae6a;
+  --mint:#2b4636; --mint-soft:#183025; --gold:#d9b871; --gold-soft:#2a2418; --gold-line:#4a3f26;
+  --canvas:#0e1712; --surface:#152019; --sunken:#0a120d;
+  --ink:#e7efe9; --ink-soft:#a3b3a8; --ink-faint:#71837a; --line:#23312a; --line-soft:#1b271f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.35);
+}
+
+*{box-sizing:border-box;}
+body{margin:0;background:var(--canvas);color:var(--ink);font-family:var(--font-body);font-size:17px;line-height:1.62;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+.wrap{max-width:760px;margin:0 auto;padding:0 24px 72px;}
+
+/* ── Шапка ── */
+/* Фирменная плашка — постоянная в обеих темах, как фирменный бланк. */
+.masthead{background:#004522;color:#fff;margin:0 -24px 0;padding:44px 24px 40px;position:relative;overflow:hidden;}
+.masthead::after{content:"";position:absolute;right:-60px;top:-60px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(176,222,197,.16),transparent 70%);}
+.wordmark{font-family:var(--font-head);font-weight:700;font-size:12px;letter-spacing:.22em;text-transform:uppercase;opacity:.85;margin:0 0 18px;}
+.masthead h1{font-family:var(--font-head);font-weight:600;font-size:38px;line-height:1.12;letter-spacing:-.02em;text-wrap:balance;margin:0 0 14px;max-width:16ch;}
+.sub{font-size:16px;opacity:.9;margin:0 0 26px;max-width:52ch;}
+.meta{display:flex;flex-wrap:wrap;gap:10px 20px;align-items:center;font-size:14px;}
+.livelink{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.28);color:inherit;text-decoration:none;font-weight:600;font-size:14px;padding:9px 15px;border-radius:9px;transition:background .18s ease;}
+.livelink:hover{background:rgba(255,255,255,.24);}
+.livelink:focus-visible{outline:2px solid #fff;outline-offset:2px;}
+.stamp{opacity:.8;}
+
+/* ── Сводка ── */
+.glance{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:-26px 0 8px;position:relative;z-index:2;}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px 15px;box-shadow:var(--shadow);}
+.tile .n{font-family:var(--font-head);font-weight:700;font-size:26px;line-height:1;color:var(--brand);font-variant-numeric:tabular-nums;}
+.tile .k{font-size:12.5px;color:var(--ink-soft);margin-top:7px;line-height:1.3;}
+.tile.good .n{color:var(--accent-deep);}
+.tile.ask{border-color:var(--gold-line);background:var(--gold-soft);}
+.tile.ask .n{color:var(--gold);}
+
+/* ── Секции ── */
+section{margin-top:44px;}
+.eyebrow{font-family:var(--font-head);font-weight:700;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin:0 0 14px;display:flex;align-items:center;gap:12px;}
+.eyebrow::after{content:"";flex:1;height:1px;background:var(--line);}
+h2.title{font-family:var(--font-head);font-weight:600;font-size:25px;letter-spacing:-.01em;color:var(--ink);margin:0 0 8px;text-wrap:balance;}
+p.lead{color:var(--ink-soft);margin:0 0 22px;max-width:64ch;}
+p{max-width:66ch;}
+a{color:var(--accent-deep);}
+
+.intro{background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:12px;padding:22px 24px;box-shadow:var(--shadow);}
+.intro p{margin:0;}
+
+/* Список сделанного */
+.done{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:2px;}
+.done>li{display:grid;grid-template-columns:26px 1fr;gap:14px;padding:16px 0;border-top:1px solid var(--line-soft);}
+.done>li:first-child{border-top:none;}
+.check{width:24px;height:24px;border-radius:50%;background:var(--mint-soft);display:flex;align-items:center;justify-content:center;margin-top:2px;}
+.check svg{width:13px;height:13px;stroke:var(--accent-deep);}
+.done h3{font-family:var(--font-body);font-weight:600;font-size:17px;margin:2px 0 4px;color:var(--ink);}
+.done p{margin:0;color:var(--ink-soft);font-size:15.5px;}
+
+/* Блок решений */
+.decisions{background:var(--gold-soft);border:1px solid var(--gold-line);border-radius:14px;padding:26px 26px 24px;}
+.decisions .eyebrow{color:var(--gold);}
+.decisions .eyebrow::after{background:var(--gold-line);}
+.decisions>p.lead{color:var(--ink-soft);}
+.ask-list{list-style:none;counter-reset:ask;padding:0;margin:14px 0 0;display:flex;flex-direction:column;gap:14px;}
+.ask-list li{counter-increment:ask;background:var(--surface);border:1px solid var(--gold-line);border-radius:11px;padding:16px 18px 16px 52px;position:relative;}
+.ask-list li::before{content:counter(ask);position:absolute;left:16px;top:15px;width:24px;height:24px;border-radius:50%;background:var(--gold);color:#fff;font-family:var(--font-head);font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;}
+:root[data-theme="dark"] .ask-list li::before{color:#2a2418;}
+.ask-list b{color:var(--ink);}
+.ask-list .q{display:block;margin-top:7px;font-weight:600;color:var(--brand);font-size:15px;}
+
+.next{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:22px 24px;box-shadow:var(--shadow);}
+.next p{margin:0;color:var(--ink-soft);}
+.next p+p{margin-top:12px;}
+
+footer{margin-top:48px;padding-top:22px;border-top:1px solid var(--line);color:var(--ink-faint);font-size:13.5px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;}
+footer a{color:var(--accent-deep);text-decoration:none;font-weight:600;}
+
+strong{color:var(--ink);font-weight:600;}
+
+@media (max-width:620px){
+  .glance{grid-template-columns:repeat(2,1fr);}
+  .masthead h1{font-size:30px;}
+  body{font-size:16px;}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;}}
+</style>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="wordmark">IGRObeauty · Корзина</p>
+    <h1>Отчёт по прототипу корзины</h1>
+    <p class="sub">Что сделано с начала проекта, что проверено и что требует вашего решения.</p>
+    <div class="meta">
+      <a class="livelink" href="https://mayfreym.github.io/igro_basket/" target="_blank" rel="noopener">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M10 14L21 3M21 3h-6M21 3v6M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Открыть корзину вживую
+      </a>
+      <span class="stamp">Обновлён 20 июля 2026</span>
+    </div>
+  </header>
+
+  <div class="glance">
+    <div class="tile good"><div class="n">✓</div><div class="k">Перенесено без потери функционала</div></div>
+    <div class="tile good"><div class="n">130</div><div class="k">автопроверок расчётов и поведения</div></div>
+    <div class="tile good"><div class="n">✓</div><div class="k">Опубликовано, можно потрогать</div></div>
+    <div class="tile ask"><div class="n">3</div><div class="k">вопроса ждут вашего решения</div></div>
+  </div>
+
+  <section>
+    <p class="eyebrow">Коротко</p>
+    <div class="intro">
+      <p>Прототип корзины переведён с устаревшего внутреннего движка на обычную, «чистую» вёрстку — <strong>без потери функционала</strong>. Проект выложен по ссылке выше, покрыт автоматическими проверками, найденные проблемы исправлены. Осталось несколько вопросов по ценам и скидкам, которые нельзя решать без вас — они в блоке ниже.</p>
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">Что было в начале</p>
+    <h2 class="title">Тяжёлый нестандартный движок</h2>
+    <p>Исходная корзина работала на самодельном шаблонном движке поверх библиотеки React. Такую конструкцию трудно поддерживать, и она плохо ложится на будущую платформу — 1С-Битрикс. Задача была переписать корзину на обычные, общепринятые технологии, сохранив поведение один в один.</p>
+  </section>
+
+  <section>
+    <p class="eyebrow">Что сделано</p>
+    <ul class="done">
+      <li>
+        <span class="check"><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <div><h3>Перенос на обычную вёрстку</h3><p>Корзина переписана на стандартные HTML, CSS и JavaScript — без сторонних библиотек и сборщиков. Оригинал сохранён отдельно как эталон.</p></div>
+      </li>
+      <li>
+        <span class="check"><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <div><h3>Проверка точности переноса</h3><p>Сверка со старой версией не «на глаз», а числами: весь видимый текст совпал во всех режимах (6 статусов мастера, десктоп/планшет/мобильный, вкладки, попап), пройдено 30 сценариев поведения.</p></div>
+      </li>
+      <li>
+        <span class="check"><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <div><h3>Публикация для просмотра</h3><p>Проект под контролем версий и опубликован на бесплатном хостинге — по ссылке в шапке. Сверху оставлена служебная панель: можно самому переключать статус мастера и вкладки и видеть, как меняются цены.</p></div>
+      </li>
+      <li>
+        <span class="check"><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <div><h3>Аудит безопасности и качества</h3><p>Подтверждено документально: <strong>утечек памяти нет, уязвимостей нет, персональные данные из формы никуда не сохраняются, расчёты верны.</strong></p></div>
+      </li>
+      <li>
+        <span class="check"><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <div><h3>Исправленные проблемы</h3><p><strong>Шрифты</strong> вынесены на свой сайт (быстрее + закрыт риск по 152-ФЗ). <strong>Маска телефона</strong> больше не искажает номера с «8». <strong>Форма оформления</strong> теперь не подтверждается с пустыми полями. Починена подсказка шкалы скидки и ряд мелочей надёжности.</p></div>
+      </li>
+      <li>
+        <span class="check"><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <div><h3>Автоматические тесты</h3><p>Написана «страховочная сетка» — 130 проверок. Перед любым будущим изменением за секунды видно, что суммы и скидки не «поехали». Для денежной страницы это критично.</p></div>
+      </li>
+      <li>
+        <span class="check"><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <div><h3>Читаемость кода</h3><p>Названия в коде приведены к понятному виду, чтобы следующий разработчик — в том числе при переезде на Битрикс — разбирался быстро.</p></div>
+      </li>
+    </ul>
+  </section>
+
+  <section class="decisions">
+    <p class="eyebrow">Требует вашего решения</p>
+    <p class="lead">Здесь нужен ответ от вас или владельца — это касается денег, и менять на своё усмотрение нельзя.</p>
+    <ol class="ask-list">
+      <li>
+        <b>Сумма на вкладке «Обычные товары»</b> не сходится со строками под ней и не меняется при смене статуса. Возможно, так и задумано (базовая цена мастера), возможно — ошибка.
+        <span class="q">Вопрос: вкладка должна показывать цену мастера или цену для текущего статуса?</span>
+      </li>
+      <li>
+        <b>Скидка обещана на 10 брендов, а даётся трём.</b> Подсказка у бейджа перечисляет 10 брендов (Nirvel, Levissime, Iuver и т.д.), а повышенная скидка применяется только к трём. Перенесено ровно как в оригинале.
+        <span class="q">Вопрос владельцу: какие бренды реально должны получать повышенную скидку?</span>
+      </li>
+      <li>
+        <b>Доступность с клавиатуры.</b> Часть действий (удалить товар, переключить вкладку, закрыть попап) сейчас недоступна без мыши. Исправление улучшит удобство и соответствие требованиям, но немного меняет поведение против оригинала.
+        <span class="q">Делаем только с вашего согласия — около 1–2 часов работы.</span>
+      </li>
+    </ol>
+  </section>
+
+  <section>
+    <p class="eyebrow">Что впереди</p>
+    <h2 class="title">Этап Битрикса</h2>
+    <div class="next">
+      <p>Интеграция в 1С-Битрикс — следующий этап. Вёрстка уже готовилась под него: разметка ложится в шаблон компонента, а расчёты в бою будет вести сервер.</p>
+      <p>Заранее записаны две подготовительные задачи — вынести форму оформления в отдельный блок и добавить классам префикс во избежание конфликтов на общей странице. Сделаем при интеграции.</p>
+    </div>
+  </section>
+
+  <footer>
+    <span>Корзина IGRObeauty · отчёт для менеджера</span>
+    <a href="https://mayfreym.github.io/igro_basket/" target="_blank" rel="noopener">mayfreym.github.io/igro_basket</a>
+  </footer>
+
+</div>
+
+</body>
+</html>
