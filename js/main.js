@@ -12,6 +12,10 @@
 
   const bpOf = (w) => (w >= 1280 ? "desktop" : w >= 768 ? "tablet" : "mobile");
 
+  // MediaQueryList живой: создаётся один раз, .matches продолжает отвечать на
+  // смену устройства. Раньше matchMedia звался на каждый клик — новый объект.
+  const hoverMql = window.matchMedia("(hover: hover)");
+
   const state = (() => {
     const qty = {}, checked = {};
     // На старте выбраны все товары, количество берётся из каталога.
@@ -88,15 +92,15 @@
 
     // Дальше — только подсказки, и только там, где нет наведения: на мыши ими
     // целиком управляет CSS, клик не должен оставлять их открытыми после ухода.
-    // МЕЛОЧЬ: matchMedia зовётся на каждый клик, каждый раз новый объект. Поднять
-    // наверх один раз — MediaQueryList живой, .matches продолжит отвечать на
-    // смену устройства. См. FIXES.md #13.
-    if (window.matchMedia("(hover: hover)").matches) return;
+    if (hoverMql.matches) return;
 
     if (t.closest("[data-vol-tip-wrap]")) { update({ volTipOpen: !state.volTipOpen }); return; }
 
+    // Узел подсказки берём в переменную: нет узла — badgeTip == null, ветка молча
+    // пропускается, а не роняет обработчик на .textContent от null.
     const badge = t.closest("[data-badge]");
-    if (badge && badge.querySelector("[data-badge-tip-text]").textContent) {
+    const badgeTip = badge && badge.querySelector("[data-badge-tip-text]");
+    if (badgeTip && badgeTip.textContent) {
       const key = "badge-" + badge.dataset.badge;
       update({ openTip: state.openTip === key ? null : key });
       return;
