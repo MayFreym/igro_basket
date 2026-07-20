@@ -8,10 +8,14 @@ window.Cart.calc = (() => {
   const { catalog, discountTiers, statuses, DISCOUNT_BRANDS, QMIN, QMAX } = window.Cart.data;
 
   // 1 350 ₽ — неразрывный пробел перед рублём, копейки только когда они есть.
+  // Два форматтера построены один раз: toLocaleString с объектом опций каждый
+  // раз конструирует новый Intl.NumberFormat — дорого. Вывод байт-в-байт тот же.
+  const nf0 = new Intl.NumberFormat("ru-RU", { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+  const nf2 = new Intl.NumberFormat("ru-RU", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   const fmt = (n) => {
     const r = Math.round(n * 100) / 100;
     const frac = Math.round(r * 100) % 100 !== 0;
-    return r.toLocaleString("ru-RU", { minimumFractionDigits: frac ? 2 : 0, maximumFractionDigits: 2 }) + " ₽";
+    return (frac ? nf2 : nf0).format(r) + " ₽";
   };
   // Скидки показываются со знаком минус: −1 629 ₽.
   const neg = (n) => (n > 0 ? "−" : "") + fmt(n);
