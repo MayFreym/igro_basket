@@ -7,7 +7,7 @@
   // МЁРТВОЕ: QMAX здесь не используется — ограничение сверху накладывает clampQ
   // внутри calc.js. См. FIXES.md #13.
   const { catalog, QMIN, QMAX } = window.Cart.data;
-  const { clampQ, applyPhoneMask } = window.Cart.calc;
+  const { clampQ, phoneDigits, phoneFormat } = window.Cart.calc;
   const { refresh, fillStatusSelect } = window.Cart.view;
 
   const bpOf = (w) => (w >= 1280 ? "desktop" : w >= 768 ? "tablet" : "mobile");
@@ -163,7 +163,14 @@
 
     if (t.matches("[data-form-name]")) { update({ formName: t.value }); return; }
     if (t.matches("[data-form-email]")) { update({ formEmail: t.value }); return; }
-    if (t.matches("[data-form-phone]")) { update({ formPhone: applyPhoneMask(t.value) }); return; }
+    if (t.matches("[data-form-phone]")) {
+      let d = phoneDigits(t.value);
+      // backspace убрал разделитель, а не цифру — иначе маска вернула бы его на
+      // место и поле застряло бы. Тогда снимаем последнюю цифру.
+      if (t.value.length < state.formPhone.length && phoneFormat(d) === state.formPhone) d = d.slice(0, -1);
+      update({ formPhone: phoneFormat(d) });
+      return;
+    }
   });
 
   // Клик в поле количества выделяет содержимое — удобно набрать новое число.

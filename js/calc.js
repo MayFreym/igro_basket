@@ -307,16 +307,25 @@ window.Cart.calc = (() => {
     };
   }
 
-  // Маска телефона в попапе: +7 (999) 123-45-67.
-  function applyPhoneMask(val) {
-    let d = String(val).replace(/\D/g, "").replace(/^7/, "").slice(0, 10);
-    let i = 0, out = "";
-    for (const ch of "+7 (___) ___-__-__") { out += (ch === "_") ? (d[i] != null ? d[i++] : "_") : ch; }
+  // Маска телефона в попапе: +7 (999) 123-45-67. Прогрессивная — не рисует того,
+  // чего ещё не ввели, поэтому backspace доходит до пустой строки не застревая.
+  function phoneDigits(val) {
+    let d = String(val).replace(/\D/g, "");
+    if (d[0] === "7" || d[0] === "8") d = d.slice(1);   // код страны либо восьмёрка
+    return d.slice(0, 10);
+  }
+  function phoneFormat(d) {
+    if (!d) return "";
+    let out = "+7 (" + d.slice(0, 3);
+    if (d.length >= 3) out += ")";
+    if (d.length > 3) out += " " + d.slice(3, 6);
+    if (d.length > 6) out += "-" + d.slice(6, 8);
+    if (d.length > 8) out += "-" + d.slice(8, 10);
     return out;
   }
 
   // fmt и neg снаружи никто не читает — используются только внутри. Убирать из
   // экспорта в последнюю очередь: после переезда на Битрикс форматирование может
   // понадобиться шаблону. См. FIXES.md #11.
-  return { compute, fmt, neg, clampQ, applyPhoneMask };
+  return { compute, fmt, neg, clampQ, phoneDigits, phoneFormat };
 })();
