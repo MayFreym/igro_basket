@@ -25,33 +25,33 @@
 
   <!-- Служебная панель прототипа: индикатор брейкпоинта, переключатель статуса
        мастера и тумблеры вкладок. В боевой корзине этого блока нет. -->
-  <div class="u-style-1" data-dev-bar>
+  <div class="dev-bar" data-dev-bar>
     <div class="bp-badge" data-bp-label>Desktop · 1280+</div>
-    <div class="u-style-2">
-      <span class="u-style-3">Статус мастера</span>
+    <div class="dev-bar-group">
+      <span class="dev-label">Статус мастера</span>
       <select class="dev-select" data-status-select></select>
     </div>
     <label class="dev-toggle">
       <input type="checkbox" class="dev-toggle-input" data-toggle-tab="markdown" checked>
-      <span class="u-style-3">Уценённые товары</span>
+      <span class="dev-label">Уценённые товары</span>
     </label>
     <label class="dev-toggle">
       <input type="checkbox" class="dev-toggle-input" data-toggle-tab="promo" checked>
-      <span class="u-style-3">Спец. акции</span>
+      <span class="dev-label">Спец. акции</span>
     </label>
   </div>
 
   <!-- Хлебные крошки -->
-  <nav class="u-style-4">
-    <span class="u-style-5">Главная</span>
-    <span class="u-style-6">/</span>
-    <span class="u-style-7">Корзина</span>
+  <nav class="breadcrumbs">
+    <span class="breadcrumb-link">Главная</span>
+    <span class="breadcrumb-sep">/</span>
+    <span class="breadcrumb-current">Корзина</span>
   </nav>
 
   <!-- Заголовок страницы -->
-  <div class="u-style-8">
+  <div class="cart-head">
     <h1 class="cart-h1">Корзина</h1>
-    <span class="u-style-9">Позиций: <strong class="u-style-10" data-total-positions>11</strong></span>
+    <span class="cart-head-count">Позиций: <strong class="cart-head-count-num" data-total-positions>11</strong></span>
   </div>
 
   <!-- Плашка статуса мастера. Три взаимоисключающих варианта: мобильная плашка
@@ -94,7 +94,7 @@
     <a class="rrc-loyalty" href="https://www.igrobeauty.ru/about/club/" target="_blank" rel="noopener" data-rrc-loyalty>Узнать о программе лояльности</a>
 
     <!-- Вариант 3б: тёмная плашка статуса -->
-    <span class="u-style-11" data-status-header hidden>Мой статус</span>
+    <span class="status-header-label" data-status-header hidden>Мой статус</span>
     <div class="status-divider" data-status-divider hidden></div>
     <div class="status-group" data-status-group hidden>
       <span class="status-name" data-status-name></span>
@@ -123,7 +123,7 @@
   </div>
 
   <!-- Сообщение о разных категориях в корзине -->
-  <div class="u-style-14" data-info-alert>
+  <div class="info-alert-wrap" data-info-alert>
     <div class="ds-alert-info" role="alert">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="ds-alert-icon"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"></circle><path d="M12 11v5M12 8h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg>
       <div class="ds-alert-body">В вашей корзине есть товары из разных категорий — они рассчитываются отдельно по своим правилам цены.</div>
@@ -137,7 +137,7 @@
   <div class="cart-grid">
 
   <!-- Левая колонка: вкладки и список товаров -->
-  <div class="u-style-15">
+  <div class="cart-main">
     <div class="tabs-section">
 
       <!-- Вкладки групп -->
@@ -147,7 +147,7 @@
           <span class="tab-count">4 шт.</span>
           <span class="tab-sum">7 330 ₽</span>
           <label class="tab-check" data-tab-check>
-            <input type="checkbox" class="u-style-18" data-check-all="regular" checked>
+            <input type="checkbox" class="hidden-check" data-check-all="regular" checked>
             <span class="cb-box is-on">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" class="cb-check"><path d="M5 13l4 4L19 7" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
             </span>
@@ -158,7 +158,7 @@
           <span class="tab-count">4 шт.</span>
           <span class="tab-sum">2 590 ₽</span>
           <label class="tab-check" data-tab-check>
-            <input type="checkbox" class="u-style-18" data-check-all="markdown" checked>
+            <input type="checkbox" class="hidden-check" data-check-all="markdown" checked>
             <span class="cb-box is-on">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" class="cb-check"><path d="M5 13l4 4L19 7" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
             </span>
@@ -169,7 +169,7 @@
           <span class="tab-count">3 шт.</span>
           <span class="tab-sum">3 097 ₽</span>
           <label class="tab-check" data-tab-check>
-            <input type="checkbox" class="u-style-18" data-check-all="promo" checked>
+            <input type="checkbox" class="hidden-check" data-check-all="promo" checked>
             <span class="cb-box is-on">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" class="cb-check"><path d="M5 13l4 4L19 7" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
             </span>
@@ -181,13 +181,13 @@
       <div class="tabs-card" data-tabs-card>
 
         <!-- Шкала скидки за объём — только для вкладки обычных товаров -->
-        <div class="u-style-21" data-volume-bar>
+        <div class="volume-bar" data-volume-bar>
           <div class="vol-outer">
             <div class="vol-status">
-              <div class="u-style-22">
-                <span class="u-style-23">Скидка за объём</span>
+              <div class="volume-head">
+                <span class="volume-title">Скидка за объём</span>
                 <span class="vol-tip-wrap" data-vol-tip-wrap>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" class="u-style-24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 23c6.075 0 11-4.925 11-11S18.075 1 12 1 1 5.925 1 12s4.925 11 11 11Zm0-16.6a1.6 1.6 0 1 0 0 3.2 1.6 1.6 0 0 0 0-3.2Zm-1.45 5.45a1.45 1.45 0 0 1 2.9 0v4.2a1.45 1.45 0 0 1-2.9 0v-4.2Z"></path></svg>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" class="volume-info-icon"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 23c6.075 0 11-4.925 11-11S18.075 1 12 1 1 5.925 1 12s4.925 11 11 11Zm0-16.6a1.6 1.6 0 1 0 0 3.2 1.6 1.6 0 0 0 0-3.2Zm-1.45 5.45a1.45 1.45 0 0 1 2.9 0v4.2a1.45 1.45 0 0 1-2.9 0v-4.2Z"></path></svg>
                   <span class="tip tip--vol" role="tooltip" data-vol-tip>
                     <span class="tip-bridge"></span>
                     <span class="tip-text">Автоматически применяется к сумме заказа в соответствии с порогами на шкале при отсутствии более выгодных скидок.</span>
@@ -196,7 +196,7 @@
                   </span>
                 </span>
               </div>
-              <span class="u-style-25" data-volume-status>10% — применена</span>
+              <span class="volume-status" data-volume-status>10% — применена</span>
             </div>
             <!-- Пять порогов: 5000, 7000, 10000, 20000, 100000 -->
             <div class="vol-tiers" data-vol-tiers>
@@ -234,7 +234,7 @@
 
           <div class="row" data-row="r1">
             <label class="row-check">
-              <input type="checkbox" class="u-style-18" data-check checked>
+              <input type="checkbox" class="hidden-check" data-check checked>
               <span class="cb-box is-on"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" class="cb-check"><path d="M5 13l4 4L19 7" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
             </label>
             <div class="row-img" style="background-image:url(assets/products/nirvel.png)"></div>
@@ -245,14 +245,14 @@
             <div class="row-right">
               <div class="row-price-block">
                 <span class="row-price" data-price>10 800 ₽</span>
-                <span class="u-style-27" data-old-price hidden></span>
+                <span class="old-price" data-old-price hidden></span>
               </div>
               <span class="row-price-type" data-price-type>РРЦ со скидкой
 10% за объём</span>
               <span class="row-price-badge" data-price-badge hidden>Цена по Акции</span>
               <div class="row-qty">
                 <span class="row-unit-spacer">&nbsp;</span>
-                <div class="u-style-28" data-qty-stepper>
+                <div class="qty-stepper" data-qty-stepper>
                   <button type="button" class="qty-btn is-dec" aria-label="Уменьшить" data-qty-dec>−</button>
                   <input type="text" inputmode="numeric" class="qty-input" value="4" data-qty-input>
                   <button type="button" class="qty-btn is-inc" aria-label="Увеличить" data-qty-inc>+</button>
@@ -260,16 +260,16 @@
                 <span class="row-per-unit" data-per-unit>2 700 ₽/ед</span>
               </div>
             </div>
-            <span class="u-style-29">
-              <div class="u-style-30" role="button" aria-label="Удалить" data-remove>
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="u-style-31"><path d="M4 4L12 12M12 4L4 12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path></svg>
+            <span class="row-remove-pos">
+              <div class="remove-btn" role="button" aria-label="Удалить" data-remove>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="remove-icon"><path d="M4 4L12 12M12 4L4 12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path></svg>
               </div>
             </span>
           </div>
 
           <div class="row has-border" data-row="r2">
             <label class="row-check">
-              <input type="checkbox" class="u-style-18" data-check checked>
+              <input type="checkbox" class="hidden-check" data-check checked>
               <span class="cb-box is-on"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" class="cb-check"><path d="M5 13l4 4L19 7" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
             </label>
             <div class="row-img" style="background-image:url(assets/products/lashcolor.png)"></div>
@@ -280,14 +280,14 @@
             <div class="row-right">
               <div class="row-price-block">
                 <span class="row-price" data-price>1 440 ₽</span>
-                <span class="u-style-27" data-old-price hidden></span>
+                <span class="old-price" data-old-price hidden></span>
               </div>
               <span class="row-price-type" data-price-type>РРЦ со скидкой
 10% за объём</span>
               <span class="row-price-badge" data-price-badge hidden>Цена по Акции</span>
               <div class="row-qty">
                 <span class="row-unit-spacer">&nbsp;</span>
-                <div class="u-style-28" data-qty-stepper>
+                <div class="qty-stepper" data-qty-stepper>
                   <button type="button" class="qty-btn is-dec" aria-label="Уменьшить" data-qty-dec disabled>−</button>
                   <input type="text" inputmode="numeric" class="qty-input" value="1" data-qty-input>
                   <button type="button" class="qty-btn is-inc" aria-label="Увеличить" data-qty-inc>+</button>
@@ -295,16 +295,16 @@
                 <span class="row-per-unit" data-per-unit>&nbsp;</span>
               </div>
             </div>
-            <span class="u-style-29">
-              <div class="u-style-30" role="button" aria-label="Удалить" data-remove>
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="u-style-31"><path d="M4 4L12 12M12 4L4 12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path></svg>
+            <span class="row-remove-pos">
+              <div class="remove-btn" role="button" aria-label="Удалить" data-remove>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="remove-icon"><path d="M4 4L12 12M12 4L4 12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path></svg>
               </div>
             </span>
           </div>
 
           <div class="row has-border" data-row="r3">
             <label class="row-check">
-              <input type="checkbox" class="u-style-18" data-check checked>
+              <input type="checkbox" class="hidden-check" data-check checked>
               <span class="cb-box is-on"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" class="cb-check"><path d="M5 13l4 4L19 7" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
             </label>
             <div class="row-img" style="background-image:url(assets/products/concept.png)"></div>
@@ -315,14 +315,14 @@
             <div class="row-right">
               <div class="row-price-block">
                 <span class="row-price" data-price>1 800 ₽</span>
-                <span class="u-style-27" data-old-price hidden></span>
+                <span class="old-price" data-old-price hidden></span>
               </div>
               <span class="row-price-type" data-price-type>РРЦ со скидкой
 10% за объём</span>
               <span class="row-price-badge" data-price-badge hidden>Цена по Акции</span>
               <div class="row-qty">
                 <span class="row-unit-spacer">&nbsp;</span>
-                <div class="u-style-28" data-qty-stepper>
+                <div class="qty-stepper" data-qty-stepper>
                   <button type="button" class="qty-btn is-dec" aria-label="Уменьшить" data-qty-dec>−</button>
                   <input type="text" inputmode="numeric" class="qty-input" value="2" data-qty-input>
                   <button type="button" class="qty-btn is-inc" aria-label="Увеличить" data-qty-inc>+</button>
@@ -330,9 +330,9 @@
                 <span class="row-per-unit" data-per-unit>900 ₽/ед</span>
               </div>
             </div>
-            <span class="u-style-29">
-              <div class="u-style-30" role="button" aria-label="Удалить" data-remove>
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="u-style-31"><path d="M4 4L12 12M12 4L4 12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path></svg>
+            <span class="row-remove-pos">
+              <div class="remove-btn" role="button" aria-label="Удалить" data-remove>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="remove-icon"><path d="M4 4L12 12M12 4L4 12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path></svg>
               </div>
             </span>
           </div>
@@ -340,7 +340,7 @@
           <!-- Единственный товар с акцией по количеству: значок акции с подсказкой -->
           <div class="row has-border" data-row="r4">
             <label class="row-check">
-              <input type="checkbox" class="u-style-18" data-check checked>
+              <input type="checkbox" class="hidden-check" data-check checked>
               <span class="cb-box is-on"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" class="cb-check"><path d="M5 13l4 4L19 7" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
             </label>
             <span class="row-promo" data-promo-badge>
@@ -360,14 +360,14 @@
             <div class="row-right">
               <div class="row-price-block">
                 <span class="row-price" data-price>621 ₽</span>
-                <span class="u-style-27" data-old-price hidden></span>
+                <span class="old-price" data-old-price hidden></span>
               </div>
               <span class="row-price-type" data-price-type>РРЦ со скидкой
 10% за объём</span>
               <span class="row-price-badge" data-price-badge hidden>Цена по Акции</span>
               <div class="row-qty">
                 <span class="row-unit-spacer">&nbsp;</span>
-                <div class="u-style-28" data-qty-stepper>
+                <div class="qty-stepper" data-qty-stepper>
                   <button type="button" class="qty-btn is-dec" aria-label="Уменьшить" data-qty-dec disabled>−</button>
                   <input type="text" inputmode="numeric" class="qty-input" value="1" data-qty-input>
                   <button type="button" class="qty-btn is-inc" aria-label="Увеличить" data-qty-inc>+</button>
@@ -375,9 +375,9 @@
                 <span class="row-per-unit" data-per-unit>&nbsp;</span>
               </div>
             </div>
-            <span class="u-style-29">
-              <div class="u-style-30" role="button" aria-label="Удалить" data-remove>
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="u-style-31"><path d="M4 4L12 12M12 4L4 12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path></svg>
+            <span class="row-remove-pos">
+              <div class="remove-btn" role="button" aria-label="Удалить" data-remove>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="remove-icon"><path d="M4 4L12 12M12 4L4 12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path></svg>
               </div>
             </span>
           </div>
@@ -389,7 +389,7 @@
 
           <div class="row" data-row="m1">
             <label class="row-check">
-              <input type="checkbox" class="u-style-18" data-check checked>
+              <input type="checkbox" class="hidden-check" data-check checked>
               <span class="cb-box is-on"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" class="cb-check"><path d="M5 13l4 4L19 7" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
             </label>
             <div class="row-img" style="background-image:url(assets/products/levissime.png)"></div>
@@ -400,13 +400,13 @@
             <div class="row-right">
               <div class="row-price-block">
                 <span class="row-price" data-price>980 ₽</span>
-                <span class="u-style-27" data-old-price>1 400 ₽</span>
+                <span class="old-price" data-old-price>1 400 ₽</span>
               </div>
               <span class="row-price-type" data-price-type></span>
               <span class="row-price-badge" data-price-badge hidden>Цена по Акции</span>
               <div class="row-qty">
                 <span class="row-unit-spacer">&nbsp;</span>
-                <div class="u-style-28" data-qty-stepper>
+                <div class="qty-stepper" data-qty-stepper>
                   <button type="button" class="qty-btn is-dec" aria-label="Уменьшить" data-qty-dec disabled>−</button>
                   <input type="text" inputmode="numeric" class="qty-input" value="1" data-qty-input>
                   <button type="button" class="qty-btn is-inc" aria-label="Увеличить" data-qty-inc>+</button>
@@ -414,16 +414,16 @@
                 <span class="row-per-unit" data-per-unit>&nbsp;</span>
               </div>
             </div>
-            <span class="u-style-29">
-              <div class="u-style-30" role="button" aria-label="Удалить" data-remove>
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="u-style-31"><path d="M4 4L12 12M12 4L4 12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path></svg>
+            <span class="row-remove-pos">
+              <div class="remove-btn" role="button" aria-label="Удалить" data-remove>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="remove-icon"><path d="M4 4L12 12M12 4L4 12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path></svg>
               </div>
             </span>
           </div>
 
           <div class="row has-border" data-row="m2">
             <label class="row-check">
-              <input type="checkbox" class="u-style-18" data-check checked>
+              <input type="checkbox" class="hidden-check" data-check checked>
               <span class="cb-box is-on"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" class="cb-check"><path d="M5 13l4 4L19 7" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
             </label>
             <div class="row-img" style="background-image:url(assets/products/iuver.png)"></div>
@@ -434,13 +434,13 @@
             <div class="row-right">
               <div class="row-price-block">
                 <span class="row-price" data-price>784 ₽</span>
-                <span class="u-style-27" data-old-price>1 120 ₽</span>
+                <span class="old-price" data-old-price>1 120 ₽</span>
               </div>
               <span class="row-price-type" data-price-type></span>
               <span class="row-price-badge" data-price-badge hidden>Цена по Акции</span>
               <div class="row-qty">
                 <span class="row-unit-spacer">&nbsp;</span>
-                <div class="u-style-28" data-qty-stepper>
+                <div class="qty-stepper" data-qty-stepper>
                   <button type="button" class="qty-btn is-dec" aria-label="Уменьшить" data-qty-dec>−</button>
                   <input type="text" inputmode="numeric" class="qty-input" value="2" data-qty-input>
                   <button type="button" class="qty-btn is-inc" aria-label="Увеличить" data-qty-inc>+</button>
@@ -448,16 +448,16 @@
                 <span class="row-per-unit" data-per-unit>392 ₽/ед</span>
               </div>
             </div>
-            <span class="u-style-29">
-              <div class="u-style-30" role="button" aria-label="Удалить" data-remove>
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="u-style-31"><path d="M4 4L12 12M12 4L4 12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path></svg>
+            <span class="row-remove-pos">
+              <div class="remove-btn" role="button" aria-label="Удалить" data-remove>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="remove-icon"><path d="M4 4L12 12M12 4L4 12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path></svg>
               </div>
             </span>
           </div>
 
           <div class="row has-border" data-row="m3">
             <label class="row-check">
-              <input type="checkbox" class="u-style-18" data-check checked>
+              <input type="checkbox" class="hidden-check" data-check checked>
               <span class="cb-box is-on"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" class="cb-check"><path d="M5 13l4 4L19 7" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
             </label>
             <div class="row-img" style="background-image:url(assets/products/lashcolor.png)"></div>
@@ -468,13 +468,13 @@
             <div class="row-right">
               <div class="row-price-block">
                 <span class="row-price" data-price>329 ₽</span>
-                <span class="u-style-27" data-old-price>470 ₽</span>
+                <span class="old-price" data-old-price>470 ₽</span>
               </div>
               <span class="row-price-type" data-price-type></span>
               <span class="row-price-badge" data-price-badge hidden>Цена по Акции</span>
               <div class="row-qty">
                 <span class="row-unit-spacer">&nbsp;</span>
-                <div class="u-style-28" data-qty-stepper>
+                <div class="qty-stepper" data-qty-stepper>
                   <button type="button" class="qty-btn is-dec" aria-label="Уменьшить" data-qty-dec disabled>−</button>
                   <input type="text" inputmode="numeric" class="qty-input" value="1" data-qty-input>
                   <button type="button" class="qty-btn is-inc" aria-label="Увеличить" data-qty-inc>+</button>
@@ -482,16 +482,16 @@
                 <span class="row-per-unit" data-per-unit>&nbsp;</span>
               </div>
             </div>
-            <span class="u-style-29">
-              <div class="u-style-30" role="button" aria-label="Удалить" data-remove>
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="u-style-31"><path d="M4 4L12 12M12 4L4 12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path></svg>
+            <span class="row-remove-pos">
+              <div class="remove-btn" role="button" aria-label="Удалить" data-remove>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="remove-icon"><path d="M4 4L12 12M12 4L4 12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path></svg>
               </div>
             </span>
           </div>
 
           <div class="row has-border" data-row="m4">
             <label class="row-check">
-              <input type="checkbox" class="u-style-18" data-check checked>
+              <input type="checkbox" class="hidden-check" data-check checked>
               <span class="cb-box is-on"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" class="cb-check"><path d="M5 13l4 4L19 7" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
             </label>
             <div class="row-img" style="background-image:url(assets/products/iuver.png)"></div>
@@ -502,13 +502,13 @@
             <div class="row-right">
               <div class="row-price-block">
                 <span class="row-price" data-price>497 ₽</span>
-                <span class="u-style-27" data-old-price>710 ₽</span>
+                <span class="old-price" data-old-price>710 ₽</span>
               </div>
               <span class="row-price-type" data-price-type></span>
               <span class="row-price-badge" data-price-badge hidden>Цена по Акции</span>
               <div class="row-qty">
                 <span class="row-unit-spacer">&nbsp;</span>
-                <div class="u-style-28" data-qty-stepper>
+                <div class="qty-stepper" data-qty-stepper>
                   <button type="button" class="qty-btn is-dec" aria-label="Уменьшить" data-qty-dec disabled>−</button>
                   <input type="text" inputmode="numeric" class="qty-input" value="1" data-qty-input>
                   <button type="button" class="qty-btn is-inc" aria-label="Увеличить" data-qty-inc>+</button>
@@ -516,9 +516,9 @@
                 <span class="row-per-unit" data-per-unit>&nbsp;</span>
               </div>
             </div>
-            <span class="u-style-29">
-              <div class="u-style-30" role="button" aria-label="Удалить" data-remove>
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="u-style-31"><path d="M4 4L12 12M12 4L4 12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path></svg>
+            <span class="row-remove-pos">
+              <div class="remove-btn" role="button" aria-label="Удалить" data-remove>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="remove-icon"><path d="M4 4L12 12M12 4L4 12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path></svg>
               </div>
             </span>
           </div>
@@ -530,12 +530,12 @@
         <div class="tab-panel" data-panel="promo" hidden>
 
           <div class="promo-header is-first">
-            <span class="u-style-26">АКЦИЯ "СЕБЕ ЛЮБИМОЙ"</span>
+            <span class="promo-group-title">АКЦИЯ "СЕБЕ ЛЮБИМОЙ"</span>
           </div>
 
           <div class="row has-border" data-row="p1">
             <label class="row-check">
-              <input type="checkbox" class="u-style-18" data-check checked>
+              <input type="checkbox" class="hidden-check" data-check checked>
               <span class="cb-box is-on"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" class="cb-check"><path d="M5 13l4 4L19 7" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
             </label>
             <div class="row-img" style="background-image:url(assets/products/nirvel.png)"></div>
@@ -546,7 +546,7 @@
             <div class="row-right">
               <div class="row-price-block">
                 <span class="row-price" data-price>417 ₽</span>
-                <span class="u-style-27" data-old-price>500 ₽</span>
+                <span class="old-price" data-old-price>500 ₽</span>
               </div>
               <span class="row-price-type" data-price-type></span>
               <span class="row-price-badge" data-price-badge hidden>Цена по Акции</span>
@@ -556,16 +556,16 @@
                 <span class="row-per-unit" data-per-unit>&nbsp;</span>
               </div>
             </div>
-            <span class="u-style-29">
-              <div class="u-style-30" role="button" aria-label="Удалить" data-remove>
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="u-style-31"><path d="M4 4L12 12M12 4L4 12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path></svg>
+            <span class="row-remove-pos">
+              <div class="remove-btn" role="button" aria-label="Удалить" data-remove>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="remove-icon"><path d="M4 4L12 12M12 4L4 12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path></svg>
               </div>
             </span>
           </div>
 
           <div class="row has-border" data-row="p2">
             <label class="row-check">
-              <input type="checkbox" class="u-style-18" data-check checked>
+              <input type="checkbox" class="hidden-check" data-check checked>
               <span class="cb-box is-on"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" class="cb-check"><path d="M5 13l4 4L19 7" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
             </label>
             <div class="row-img" style="background-image:url(assets/products/levis-younglife.png)"></div>
@@ -576,7 +576,7 @@
             <div class="row-right">
               <div class="row-price-block">
                 <span class="row-price" data-price>1 320 ₽</span>
-                <span class="u-style-27" data-old-price>1 650 ₽</span>
+                <span class="old-price" data-old-price>1 650 ₽</span>
               </div>
               <span class="row-price-type" data-price-type></span>
               <span class="row-price-badge" data-price-badge hidden>Цена по Акции</span>
@@ -586,16 +586,16 @@
                 <span class="row-per-unit" data-per-unit>&nbsp;</span>
               </div>
             </div>
-            <span class="u-style-29">
-              <div class="u-style-30" role="button" aria-label="Удалить" data-remove>
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="u-style-31"><path d="M4 4L12 12M12 4L4 12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path></svg>
+            <span class="row-remove-pos">
+              <div class="remove-btn" role="button" aria-label="Удалить" data-remove>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="remove-icon"><path d="M4 4L12 12M12 4L4 12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path></svg>
               </div>
             </span>
           </div>
 
           <div class="row has-border" data-row="p3">
             <label class="row-check">
-              <input type="checkbox" class="u-style-18" data-check checked>
+              <input type="checkbox" class="hidden-check" data-check checked>
               <span class="cb-box is-on"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" class="cb-check"><path d="M5 13l4 4L19 7" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
             </label>
             <div class="row-img" style="background-image:url(assets/products/levis-hydrage.png)"></div>
@@ -606,7 +606,7 @@
             <div class="row-right">
               <div class="row-price-block">
                 <span class="row-price" data-price>1 360 ₽</span>
-                <span class="u-style-27" data-old-price>1 700 ₽</span>
+                <span class="old-price" data-old-price>1 700 ₽</span>
               </div>
               <span class="row-price-type" data-price-type></span>
               <span class="row-price-badge" data-price-badge hidden>Цена по Акции</span>
@@ -616,9 +616,9 @@
                 <span class="row-per-unit" data-per-unit>&nbsp;</span>
               </div>
             </div>
-            <span class="u-style-29">
-              <div class="u-style-30" role="button" aria-label="Удалить" data-remove>
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="u-style-31"><path d="M4 4L12 12M12 4L4 12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path></svg>
+            <span class="row-remove-pos">
+              <div class="remove-btn" role="button" aria-label="Удалить" data-remove>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="remove-icon"><path d="M4 4L12 12M12 4L4 12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path></svg>
               </div>
             </span>
           </div>
@@ -626,7 +626,7 @@
         </div><!-- /promo -->
 
         <!-- Показывается, когда в активной группе не осталось товаров -->
-        <div class="u-style-32" data-empty hidden>В этой группе пока нет товаров.</div>
+        <div class="group-empty" data-empty hidden>В этой группе пока нет товаров.</div>
 
       </div><!-- /tabs-card -->
 
@@ -640,46 +640,46 @@
 
   <!-- Правая колонка: итог заказа -->
   <div class="summary-col">
-    <div class="u-style-43">
-      <h2 class="u-style-44">Итог</h2>
-      <div class="u-style-45">
-        <div class="u-style-46">
-          <div class="u-style-47"><span class="u-style-48">Товары</span><span class="u-style-49" data-sum-goods>16 290 ₽</span></div>
+    <div class="summary-card">
+      <h2 class="summary-title">Итог</h2>
+      <div class="summary-body">
+        <div class="summary-group">
+          <div class="summary-row"><span class="summary-label">Товары</span><span class="summary-value" data-sum-goods>16 290 ₽</span></div>
           <!-- Три возможные строки скидки; видима та, что реально применилась -->
-          <div class="u-style-47" data-disc="stat" hidden><span class="u-style-48" data-disc-label>Скидка по статусу</span><span class="u-style-50" data-disc-amount></span></div>
-          <div class="u-style-47" data-disc="vol"><span class="u-style-48" data-disc-label>Скидка за объём (10%)</span><span class="u-style-50" data-disc-amount>−1 629 ₽</span></div>
-          <div class="u-style-47" data-disc="promo" hidden><span class="u-style-48" data-disc-label>Скидка по акции (от 25 шт.)</span><span class="u-style-50" data-disc-amount></span></div>
+          <div class="summary-row" data-disc="stat" hidden><span class="summary-label" data-disc-label>Скидка по статусу</span><span class="summary-value-disc" data-disc-amount></span></div>
+          <div class="summary-row" data-disc="vol"><span class="summary-label" data-disc-label>Скидка за объём (10%)</span><span class="summary-value-disc" data-disc-amount>−1 629 ₽</span></div>
+          <div class="summary-row" data-disc="promo" hidden><span class="summary-label" data-disc-label>Скидка по акции (от 25 шт.)</span><span class="summary-value-disc" data-disc-amount></span></div>
         </div>
-        <div class="u-style-51" data-markdown-sep></div>
-        <div class="u-style-46" data-markdown-sum>
-          <div class="u-style-47"><span class="u-style-48">Уценённые товары</span><span class="u-style-49" data-sum-markdown>3 700 ₽</span></div>
-          <div class="u-style-47"><span class="u-style-48">Уценка</span><span class="u-style-50" data-sum-markdown-disc>−1 110 ₽</span></div>
+        <div class="summary-sep-thin" data-markdown-sep></div>
+        <div class="summary-group" data-markdown-sum>
+          <div class="summary-row"><span class="summary-label">Уценённые товары</span><span class="summary-value" data-sum-markdown>3 700 ₽</span></div>
+          <div class="summary-row"><span class="summary-label">Уценка</span><span class="summary-value-disc" data-sum-markdown-disc>−1 110 ₽</span></div>
         </div>
-        <div class="u-style-51" data-promo-sep></div>
-        <div class="u-style-46" data-promo-sum>
-          <div class="u-style-47"><span class="u-style-48">Товары по акции</span><span class="u-style-49" data-sum-promo>3 850 ₽</span></div>
-          <div class="u-style-47"><span class="u-style-48">Выгода</span><span class="u-style-50" data-sum-promo-disc>−753 ₽</span></div>
+        <div class="summary-sep-thin" data-promo-sep></div>
+        <div class="summary-group" data-promo-sum>
+          <div class="summary-row"><span class="summary-label">Товары по акции</span><span class="summary-value" data-sum-promo>3 850 ₽</span></div>
+          <div class="summary-row"><span class="summary-label">Выгода</span><span class="summary-value-disc" data-sum-promo-disc>−753 ₽</span></div>
         </div>
       </div>
-      <div class="u-style-52"></div>
-      <div class="u-style-53">
-        <span class="u-style-54">К оплате</span>
-        <span class="u-style-55" data-sum-total>20 348 ₽</span>
+      <div class="summary-sep"></div>
+      <div class="summary-total-row">
+        <span class="summary-total-label">К оплате</span>
+        <span class="summary-total" data-sum-total>20 348 ₽</span>
       </div>
-      <div class="u-style-56">
-        <span class="u-style-57">Общая экономия</span>
-        <span class="u-style-58" data-sum-savings>3 492 ₽</span>
+      <div class="savings-banner">
+        <span class="savings-label">Общая экономия</span>
+        <span class="savings-amount" data-sum-savings>3 492 ₽</span>
       </div>
 
       <!-- Неавторизованному (РРЦ) показываются две кнопки, остальным — одна -->
       <button type="button" class="ds-btn-primary-lg checkout-reg" data-btn-reg>
-        <span class="u-style-59">Оформить с регистрацией</span>
+        <span class="btn-label">Оформить с регистрацией</span>
       </button>
       <button type="button" class="co-noreg-btn btn-lg" data-btn-noreg>
-        <span class="u-style-59">Купить без регистрации</span>
+        <span class="btn-label">Купить без регистрации</span>
       </button>
       <button type="button" class="ds-btn-primary-lg checkout-btn" data-btn-checkout hidden>
-        <span class="u-style-59">Перейти к оформлению</span>
+        <span class="btn-label">Перейти к оформлению</span>
       </button>
 
       <span class="checkout-hint">Доступные способы и время доставки можно выбрать при оформлении заказа</span>
@@ -710,14 +710,14 @@
     </div>
     <div class="modal-checks">
       <label class="modal-check-row">
-        <input type="checkbox" class="u-style-18" data-agree="1">
+        <input type="checkbox" class="hidden-check" data-agree="1">
         <span class="cb-box modal-cb" data-agree-box="1">
           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" class="cb-check"><path d="M5 13l4 4L19 7" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
         </span>
         <span class="modal-check-text">Ознакомлен с <a class="modal-link" href="https://www.igrobeauty.ru/" target="_blank" rel="noopener">Политикой в отношении обработки персональных данных</a></span>
       </label>
       <label class="modal-check-row">
-        <input type="checkbox" class="u-style-18" data-agree="2">
+        <input type="checkbox" class="hidden-check" data-agree="2">
         <span class="cb-box modal-cb" data-agree-box="2">
           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" class="cb-check"><path d="M5 13l4 4L19 7" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
         </span>
