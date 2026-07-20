@@ -6,6 +6,7 @@ RECOMMENDATIONS.md
 AUDIT.md
 FIXES.md
 docs/claude-memory/
+MANAGER-REPORT.md
 
 # Служебное окружение: содержит локальные пути к машине разработчика.
 .claude/
