@@ -162,20 +162,20 @@
     const qtyInput = t.closest("[data-qty-input]");
     if (qtyInput) {
       const raw = String(qtyInput.value).replace(/[^0-9]/g, "");
-      let v = parseInt(raw, 10);
-      if (isNaN(v)) v = QMIN;
-      update({ qty: { ...state.qty, [rowIdOf(qtyInput)]: clampQ(v) } });
+      let num = parseInt(raw, 10);
+      if (isNaN(num)) num = QMIN;
+      update({ qty: { ...state.qty, [rowIdOf(qtyInput)]: clampQ(num) } });
       return;
     }
 
     if (t.matches("[data-form-name]")) { update({ formName: t.value }); return; }
     if (t.matches("[data-form-email]")) { update({ formEmail: t.value }); return; }
     if (t.matches("[data-form-phone]")) {
-      let d = phoneDigits(t.value);
+      let digits = phoneDigits(t.value);
       // backspace убрал разделитель, а не цифру — иначе маска вернула бы его на
       // место и поле застряло бы. Тогда снимаем последнюю цифру.
-      if (t.value.length < state.formPhone.length && phoneFormat(d) === state.formPhone) d = d.slice(0, -1);
-      update({ formPhone: phoneFormat(d) });
+      if (t.value.length < state.formPhone.length && phoneFormat(digits) === state.formPhone) digits = digits.slice(0, -1);
+      update({ formPhone: phoneFormat(digits) });
       return;
     }
   });
