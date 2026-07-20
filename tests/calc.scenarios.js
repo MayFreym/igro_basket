@@ -105,6 +105,27 @@
     ok("акции: есть заголовок группы", m.rows.some(r => r.isHeader), String(m.rows.filter(r => r.isHeader).length));
   }
 
+  // --- 5b. Выключенные вкладки исключаются из итога (ловушка дубля правила) ---
+  // Golden сняты при выключенных тумблерах: именно тут расходился бы дубль
+  // правила включённых вкладок, если свести его неверно. См. FIXES.md #11.
+  {
+    const cases = {
+      "уценка off (rrc)":   { over: { showMarkdownTab: false }, total: "17 758 ₽", savings: "2 382 ₽", tabs: "regular,promo", md: false, pr: true },
+      "акции off (rrc)":    { over: { showPromoTab: false },    total: "17 251 ₽", savings: "2 739 ₽", tabs: "regular,markdown", md: true, pr: false },
+      "обе off (rrc)":      { over: { showMarkdownTab: false, showPromoTab: false }, total: "14 661 ₽", savings: "1 629 ₽", tabs: "regular", md: false, pr: false },
+      "уценка off (master)":{ over: { showMarkdownTab: false }, total: "10 672 ₽", savings: "1 323 ₽", tabs: "regular,promo", md: false, pr: true, status: "master" },
+    };
+    Object.keys(cases).forEach(name => {
+      const c = cases[name];
+      const m = compute(st(c.status || "rrc", c.over));
+      eq(name + ": К оплате", m.sum.total, c.total);
+      eq(name + ": экономия", m.sum.savings, c.savings);
+      eq(name + ": вкладки", m.tabs.map(t => t.id).join(","), c.tabs);
+      ok(name + ": блок уценки в итоге = " + c.md, m.showMarkdownSummary === c.md, String(m.showMarkdownSummary));
+      ok(name + ": блок акций в итоге = " + c.pr, m.showPromoSummary === c.pr, String(m.showPromoSummary));
+    });
+  }
+
   // --- 6. Форматирование денег ---
   eq("fmt: целое", fmt(1350), "1 350 ₽");
   eq("fmt: копейки", fmt(416.67), "416,67 ₽");

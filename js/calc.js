@@ -234,13 +234,12 @@ window.Cart.calc = (() => {
     // не удалённые позиции включённых групп.
     let regBase = 0, regVolDisc = 0, regStatDisc = 0, regPromoDisc = 0;
     let mGoods = 0, mDisc = 0, pGoods = 0, pDisc = 0;
-    catalog.forEach(g => g.items.forEach(it => {
+    // Итоги идут по enabledCatalog — тому же источнику, что вкладки, строки и
+    // шкала объёма. Раньше здесь по всему catalog заново отсекались выключенные
+    // вкладки (дубль правила из enabledCatalog выше); свели в один источник, чтобы
+    // суммы не могли молча разъехаться. Покрыто ловушкой в tests/calc.scenarios.js.
+    enabledCatalog.forEach(g => g.items.forEach(it => {
       if (removed[it.id] || !checked[it.id]) return;
-      // ОСТОРОЖНО, ДУБЛЬ: правило включённых вкладок повторяет enabledCatalog
-      // выше. Разойдутся эти два места — суммы разъедутся молча, без ошибки.
-      // См. FIXES.md #11: единственный пункт здесь с денежным риском.
-      if (g.id === "markdown" && !showMarkdownTab) return;
-      if (g.id === "promo" && !showPromoTab) return;
       const n = q(it);
       if (g.kind === "regular") {
         const info = priceInfoOf(it, n);
