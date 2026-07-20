@@ -280,8 +280,8 @@ window.Cart.view = (() => {
     setValue($("[data-form-phone]"), state.formPhone);
     setChecked($('[data-agree="1"]'), state.agree1);
     setChecked($('[data-agree="2"]'), state.agree2);
-    renderCheckbox($('[data-agree="1"]').parentNode.querySelector(".cb-box"), state.agree1 ? "on" : "off");
-    renderCheckbox($('[data-agree="2"]').parentNode.querySelector(".cb-box"), state.agree2 ? "on" : "off");
+    renderCheckbox($('[data-agree-box="1"]'), state.agree1 ? "on" : "off");
+    renderCheckbox($('[data-agree-box="2"]'), state.agree2 ? "on" : "off");
     // Подтвердить можно только с обоими согласиями.
     setDisabled($("[data-modal-confirm]"), !m.canConfirm);
   }
