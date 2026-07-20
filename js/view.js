@@ -55,10 +55,10 @@ window.Cart.view = (() => {
   // ветвистость существует ради переключателя в служебной панели. На Битриксе
   // PHP напечатает нужную плашку один раз, и функция почти вся испарится.
   function renderStatusBand(m, state) {
-    const M = state.bp === "mobile", T = state.bp === "tablet";
-    const masterMobile = M && m.isMaster;
-    const rrcMobile = M && m.isUnauth;
-    const rrcDesktop = m.isUnauth && !M;
+    const isMobile = state.bp === "mobile", isTablet = state.bp === "tablet";
+    const masterMobile = isMobile && m.isMaster;
+    const rrcMobile = isMobile && m.isUnauth;
+    const rrcDesktop = m.isUnauth && !isMobile;
     // Тёмная плашка — всё, что не мобильный «Мастер» и не РРЦ.
     const darkBand = !masterMobile && !m.isUnauth;
 
@@ -83,11 +83,11 @@ window.Cart.view = (() => {
     setShown($("[data-rrc-desc]"), rrcDesktop);
     setShown($("[data-rrc-loyalty]"), rrcDesktop);
     // На планшете подписи РРЦ короче — целиком другой текст, не размер шрифта.
-    setText($("[data-rrc-pill-text]"), T ? "РРЦ" : "Рекомендованная розничная цена");
-    setText($("[data-rrc-desc]"), T ? "Авторизуйтесь для проф. цен" : "Авторизуйтесь как мастер, чтобы получить профессиональные цены");
+    setText($("[data-rrc-pill-text]"), isTablet ? "РРЦ" : "Рекомендованная розничная цена");
+    setText($("[data-rrc-desc]"), isTablet ? "Авторизуйтесь для проф. цен" : "Авторизуйтесь как мастер, чтобы получить профессиональные цены");
 
-    setShown($("[data-status-header]"), darkBand && !M);
-    setShown($("[data-status-divider]"), darkBand && !M);
+    setShown($("[data-status-header]"), darkBand && !isMobile);
+    setShown($("[data-status-divider]"), darkBand && !isMobile);
     setShown($("[data-status-group]"), darkBand);
     setShown($("[data-loyalty-text]"), darkBand && m.isMaster);
     // Подарок виден и на белой плашке РРЦ, и на тёмной у «Мастера».
@@ -116,7 +116,7 @@ window.Cart.view = (() => {
 
   // --- вкладки ---
   function renderTabs(m, state) {
-    const M = state.bp === "mobile";
+    const isMobile = state.bp === "mobile";
     setShown($("[data-tabs-row]"), m.showTabsRow);
     // Без вкладок подложка скругляется со всех сторон.
     setClass($("[data-tabs-card]"), "is-solo", !m.showTabsRow);
@@ -134,8 +134,8 @@ window.Cart.view = (() => {
       setClass(el, "is-first", visible[0] === id);
       setClass(el, "is-last", visible[visible.length - 1] === id);
       // На мобильном имя короче, а «шт.» не помещается.
-      setText($(".tab-name", el), M ? (tabShortNames[id] || t.name) : t.name);
-      setText($(".tab-count", el), M ? String(t.countChecked) : t.countChecked + " шт.");
+      setText($(".tab-name", el), isMobile ? (tabShortNames[id] || t.name) : t.name);
+      setText($(".tab-count", el), isMobile ? String(t.countChecked) : t.countChecked + " шт.");
       setText($(".tab-sum", el), t.sumText);
       setChecked($("[data-check-all]", el), t.checked);
       renderCheckbox($(".cb-box", el), t.triState);
