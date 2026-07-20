@@ -155,6 +155,22 @@
     ok("тел: backspace до пустой за 10 шагов", state === "" && steps === 10, "шагов: " + steps);
   }
 
+  // --- 8. Гейт кнопки «Подтвердить»: валидация полей попапа ---
+  {
+    const good = { agree1: true, agree2: true, formName: "Иван Иванов", formEmail: "ivan@example.com", formPhone: "+7 (999) 123-45-67" };
+    const withForm = (over) => Object.assign(st("rrc"), good, over || {});
+    const cc = (over) => compute(withForm(over)).canConfirm;
+    ok("гейт: всё валидно → true", cc() === true, String(cc()));
+    ok("гейт: нет первой галочки → false", cc({ agree1: false }) === false, String(cc({ agree1: false })));
+    ok("гейт: нет второй галочки → false", cc({ agree2: false }) === false, String(cc({ agree2: false })));
+    ok("гейт: пустое ФИО → false", cc({ formName: "" }) === false, String(cc({ formName: "" })));
+    ok("гейт: ФИО из одной буквы → false", cc({ formName: "И" }) === false, String(cc({ formName: "И" })));
+    ok("гейт: кривой e-mail → false", cc({ formEmail: "ivan@" }) === false, String(cc({ formEmail: "ivan@" })));
+    ok("гейт: телефон 10 цифр → false", cc({ formPhone: "+7 (999) 123-45-6" }) === false, String(cc({ formPhone: "+7 (999) 123-45-6" })));
+    // Поля вовсе не заданы в состоянии — не должно падать, просто false.
+    ok("гейт: поля не заданы → false, без падения", compute(Object.assign(st("rrc"), { agree1: true, agree2: true })).canConfirm === false);
+  }
+
   // --- вывод ---
   const passed = results.filter(r => r.pass).length;
   const total = results.length;

@@ -67,11 +67,17 @@
     await type(phone, "89991234567");
     rec("маска: 8… → +7 (999) 123-45-67", phone.value === "+7 (999) 123-45-67", phone.value);
 
-    // --- гейт кнопки подтверждения ---
-    rec("подтвердить заблокировано без согласий", $("[data-modal-confirm]").disabled === true, String($("[data-modal-confirm]").disabled));
+    // --- гейт кнопки подтверждения (валидация полей) ---
+    rec("подтвердить заблокировано на старте попапа", $("[data-modal-confirm]").disabled === true, String($("[data-modal-confirm]").disabled));
     await change($('[data-agree="1"]'), true);
     await change($('[data-agree="2"]'), true);
-    rec("подтвердить разблокировано с 2 галочками", $("[data-modal-confirm]").disabled === false, String($("[data-modal-confirm]").disabled));
+    rec("подтвердить всё ещё заблокировано: ФИО/e-mail пусты", $("[data-modal-confirm]").disabled === true, String($("[data-modal-confirm]").disabled));
+    await type($("[data-form-name]"), "Иван Иванов");
+    await type($("[data-form-email]"), "ivan@example.com");
+    rec("подтвердить разблокировано: все поля валидны + галочки", $("[data-modal-confirm]").disabled === false, String($("[data-modal-confirm]").disabled));
+    await type($("[data-form-email]"), "ivan@");
+    rec("подтвердить заблокировано: e-mail стал невалидным", $("[data-modal-confirm]").disabled === true, String($("[data-modal-confirm]").disabled));
+    await type($("[data-form-email]"), "ivan@example.com"); // вернуть валидный
     rec("чекбокс согласия 1 отрисован on", $('[data-agree-box="1"]').classList.contains("is-on"), $('[data-agree-box="1"]').className);
 
     // --- закрытие попапа ---

@@ -21,6 +21,13 @@ window.Cart.calc = (() => {
   const neg = (n) => (n > 0 ? "−" : "") + fmt(n);
 
   const clampQ = (v) => Math.min(QMAX, Math.max(QMIN, v));
+
+  // Валидаторы полей попапа. Регулярка почты намеренно простая: за RFC 5322
+  // гоняться смысла нет, живой адрес всё равно проверит только письмо. Телефон —
+  // ровно 11 цифр (маска даёт +7 (999) 123-45-67). String() — поля могут быть
+  // не заданы в состоянии (например, в юнит-тестах calc).
+  const emailOk = (s) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(String(s));
+  const phoneOk = (s) => String(s).replace(/\D/g, "").length === 11;
   // МЁРТВОЕ: кормит только r.imgUrl, который view.js не читает — картинки в
   // разметке статические. См. FIXES.md #11.
   const imgUrl = (name) => "assets/products/" + name + ".png";
@@ -275,7 +282,16 @@ window.Cart.calc = (() => {
     const anyItemChecked = enabledCatalog.some(g => g.items.some(it => !removed[it.id] && checked[it.id]));
     const totalPositions = enabledCatalog.reduce((a, g) => a + g.items.filter(it => !removed[it.id]).length, 0);
 
+    // Гейт кнопки «Подтвердить»: обе галочки согласия + все три поля валидны
+    // (в разметке помечены «*»). Правило живёт здесь, в calc, а не в слое
+    // отрисовки. type="email" без <form> ничего не проверяет, поэтому проверяем сами.
+    const canConfirm = !!(state.agree1 && state.agree2
+      && String(state.formName || "").trim().length >= 2
+      && emailOk(state.formEmail)
+      && phoneOk(state.formPhone));
+
     return {
+      canConfirm,
       // МЁРТВОЕ: status и activeGroupKind ниже — ноль читателей в view.js.
       status: cur,
       isMaster: cur.id === "master",
